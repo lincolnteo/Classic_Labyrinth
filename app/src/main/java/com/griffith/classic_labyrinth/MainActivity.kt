@@ -1,122 +1,173 @@
 package com.griffith.classic_labyrinth
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Modifier
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import kotlin.jvm.java
 
-class MainActivity : ComponentActivity(), SensorEventListener {
-
-    // Initialise sensur
-    private lateinit var sensorManager: SensorManager
-    private var mySensor: Sensor? = null
-
-    // Ball position and speed
-    private var ballX by mutableFloatStateOf(300f)
-    private var ballY by mutableFloatStateOf(500f)
-    private var speedX = 0f
-    private var speedY = 0f
-    // Screen size
-    private var screenWidth = 0f
-    private var screenHeight = 0f
-    private val radius = 100f
-
+// Main Activity, entry point of the app
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Get data phone tilt sensor
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        mySensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-
-        // white screen and black ball
         setContent {
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-            ) {
-                // Get screen width and height directly inside the Canvas
-                screenWidth = size.width
-                screenHeight = size.height
+            MainMenuScreen()
+        }
+    }
+}
 
-                drawCircle(
+// Main menu UI
+@Preview(showSystemUi = true)
+@Composable
+fun MainMenuScreen() {
+    // Context for launching intents
+    val context = LocalContext.current
+
+    // Root container for the main menu screen
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(16.dp)
+    ) {
+        
+        // Top Bar: Player Stats and Settings
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            
+            // Player stats badge (Level, XP, Coins)
+            Box(
+                modifier = Modifier
+                    .background(Color.LightGray, RoundedCornerShape(20.dp))
+                    .border(2.dp, Color.Black, RoundedCornerShape(20.dp))
+                    .padding(horizontal = 16.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    text = "level: XX   XP: XX/100   Coins: XXXXX",
                     color = Color.Black,
-                    radius = radius,
-                    center = Offset(ballX, ballY)
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
                 )
             }
-        }
-    }
 
-    // Runs every time the phone tilts
-    override fun onSensorChanged(event: SensorEvent?) {
-        if (event == null) return
+            // Settings button: Opens SettingsActivity
+            Button(
+                onClick = {
+                    val intent = Intent(context, SettingsActivity::class.java)
+                    context.startActivity(intent)
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                modifier = Modifier.size(50.dp),
+                contentPadding = PaddingValues(0.dp)
 
-        val tiltLeftRight = event.values[0]
-        val tiltUpDown = event.values[1]
-
-        // Add tilt to speed
-        speedX = speedX - tiltLeftRight
-        speedY = speedY + tiltUpDown
-
-        // Slow the ball down by half
-
-        speedX = speedX * 0.7f
-        speedY = speedY * 0.7f
-
-        // Move the ball
-        ballX = ballX + speedX
-        ballY = ballY + speedY
-
-        // Don't let ball pass left wall
-        if (ballX - radius < 0f) {
-            ballX = radius
-            speedX = 0f
+            ) {
+                Text("⚙\uFE0F", fontSize = 20.sp, color = Color.Black)
+            }
         }
 
-        // Don't let ball pass right wall
-        if (ballX + radius > screenWidth) {
-            ballX = screenWidth - radius
-            speedX = 0f
+        // Center: Game Title
+        Text(
+            text = "The Classic Labyrinth",
+            fontFamily = FontFamily.Cursive,
+            fontStyle = FontStyle.Italic,
+            fontSize = 36.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.align(Alignment.Center)
+        )
+
+        // Bottom Row: Shop, Rate Us, Start
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            
+            // Shop button: Placeholder for shop screen
+            Button(
+                onClick = { /* TODO: Shop destination */ },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Green,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .size(90.dp)
+                    .border(2.dp, Color.Black, CircleShape),
+                shape = CircleShape
+            ) {
+                Text("Shop", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }
+
+            // Rate US button: Opens Play Store URL
+            Button(
+                onClick = {
+                    val intent = Intent(
+                        Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id=com.griffith.classic_labyrinth")
+                    )
+                    context.startActivity(intent)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Yellow,
+                    contentColor = Color.Black
+                ),
+                modifier = Modifier.border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Text(
+                    "Rate US!", fontSize = 16.sp, fontWeight = FontWeight.Bold
+                )
+            }
+
+            // Start button: Opens GameActivity
+            Button(
+                onClick = {
+                    val intent = Intent(context, GameActivity::class.java)
+                    context.startActivity(intent)
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Red,
+                    contentColor = Color.Black
+                ),
+                modifier = Modifier
+                    .size(90.dp)
+                    .border(2.dp, Color.Black, CircleShape),
+                shape = CircleShape
+            ) {
+                Text("Start!", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            }
         }
-
-        // Don't let ball pass top wall
-        if (ballY - radius < 0f) {
-            ballY = radius
-            speedY = 0f
-        }
-
-        // Don't let ball pass bottom wall
-        if (ballY + radius > screenHeight) {
-            ballY = screenHeight - radius
-            speedY = 0f
-        }
-    }
-
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-
-    // Turn sensor on when opening app
-    override fun onResume() {
-        super.onResume()
-        sensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_GAME)
-    }
-
-    // Turn sensor off when closing app
-    override fun onPause() {
-        super.onPause()
-        sensorManager.unregisterListener(this)
     }
 }

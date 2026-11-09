@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Classic_Labyrinth"
+rootProject.name = "Classic_labyrinth"
 include(":app")
