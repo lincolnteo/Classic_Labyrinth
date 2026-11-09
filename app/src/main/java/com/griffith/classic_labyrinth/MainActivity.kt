@@ -57,14 +57,14 @@ fun MainMenuScreen() {
             .background(Color.White)
             .padding(16.dp)
     ) {
-        
+
         // Top Bar: Player Stats and Settings
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            
+
             // Player stats badge (Level, XP, Coins)
             Box(
                 modifier = Modifier
@@ -114,7 +114,7 @@ fun MainMenuScreen() {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            
+
             // Shop button: Placeholder for shop screen
             Button(
                 onClick = { /* TODO: Shop destination */ },
@@ -135,7 +135,7 @@ fun MainMenuScreen() {
                 onClick = {
                     val intent = Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=com.griffith.classic_labyrinth")
+                        Uri.parse("https://play.google.com/store/apps/details?id=com.maithu.griffith")
                     )
                     context.startActivity(intent)
                 },
