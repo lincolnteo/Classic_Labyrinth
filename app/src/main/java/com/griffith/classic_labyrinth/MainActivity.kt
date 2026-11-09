@@ -3,15 +3,8 @@ package com.griffith.classic_labyrinth
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.griffith.classic_labyrinth.ui.theme.Classic_LabyrinthTheme
 import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -36,6 +29,10 @@ class MainActivity : ComponentActivity(), SensorEventListener {
     private var ballY by mutableFloatStateOf(500f)
     private var speedX = 0f
     private var speedY = 0f
+    // Screen size
+    private var screenWidth = 0f
+    private var screenHeight = 0f
+    private val radius = 100f
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +48,13 @@ class MainActivity : ComponentActivity(), SensorEventListener {
                     .fillMaxSize()
                     .background(Color.White)
             ) {
+                // Get screen width and height directly inside the Canvas
+                screenWidth = size.width
+                screenHeight = size.height
+
                 drawCircle(
                     color = Color.Black,
-                    radius = 100f,
+                    radius = radius,
                     center = Offset(ballX, ballY)
                 )
             }
@@ -79,6 +80,30 @@ class MainActivity : ComponentActivity(), SensorEventListener {
         // Move the ball
         ballX = ballX + speedX
         ballY = ballY + speedY
+
+        // Don't let ball pass left wall
+        if (ballX - radius < 0f) {
+            ballX = radius
+            speedX = 0f
+        }
+
+        // Don't let ball pass right wall
+        if (ballX + radius > screenWidth) {
+            ballX = screenWidth - radius
+            speedX = 0f
+        }
+
+        // Don't let ball pass top wall
+        if (ballY - radius < 0f) {
+            ballY = radius
+            speedY = 0f
+        }
+
+        // Don't let ball pass bottom wall
+        if (ballY + radius > screenHeight) {
+            ballY = screenHeight - radius
+            speedY = 0f
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
