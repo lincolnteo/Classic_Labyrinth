@@ -117,7 +117,10 @@ fun MainMenuScreen() {
 
             // Shop button: Placeholder for shop screen
             Button(
-                onClick = { /* TODO: Shop destination */ },
+                onClick = {
+                    val intent = Intent(context, ShopActivity::class.java)
+                    context.startActivity(intent)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Green,
                     contentColor = Color.White
