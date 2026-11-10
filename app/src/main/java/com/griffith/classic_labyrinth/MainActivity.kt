@@ -136,7 +136,7 @@ fun MainMenuScreen() {
             // Rate US button: Opens Play Store URL
             Button(
                 onClick = {
-                    val intent = Intent(
+                    val intent = Intent(// implicit intent
                         Intent.ACTION_VIEW,
                         Uri.parse("https://play.google.com/store/apps/details?id=com.maithu.griffith")
                     )
@@ -157,7 +157,7 @@ fun MainMenuScreen() {
             // Start button: Opens GameActivity
             Button(
                 onClick = {
-                    val intent = Intent(context, GameActivity::class.java)
+                    val intent = Intent(context, LevelsActivity::class.java)
                     context.startActivity(intent)
                 },
                 colors = ButtonDefaults.buttonColors(

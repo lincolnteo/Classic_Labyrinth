@@ -38,6 +38,10 @@
             android:name=".ShopActivity"
             android:exported="false"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".LevelsActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
