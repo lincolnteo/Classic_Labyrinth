@@ -1,3 +1,5 @@
+// Lincoln Teo Ming Kern - 3122215
+// github repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import android.os.Bundle
