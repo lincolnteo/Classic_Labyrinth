@@ -7,7 +7,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -19,6 +18,19 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class GameActivity : ComponentActivity(), SensorEventListener {
 
@@ -41,25 +53,45 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         super.onCreate(savedInstanceState)
 
         // Get data phone tilt sensor
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         mySensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
         // white screen and black ball
         setContent {
-            Canvas(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.White)
             ) {
-                // Get screen width and height directly inside the Canvas
-                screenWidth = size.width
-                screenHeight = size.height
+                // Playzone Canvas (draws behind the button)
+                Canvas(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    // Get screen width and height directly inside the Canvas
+                    screenWidth = size.width
+                    screenHeight = size.height
 
-                drawCircle(
-                    color = Color.Black,
-                    radius = radius,
-                    center = Offset(ballX, ballY)
-                )
+                    drawCircle(
+                        color = Color.Black,
+                        radius = radius,
+                        center = Offset(ballX, ballY)
+                    )
+                }
+
+                // Top right exit button overlapping the canvas
+                Button(
+                    onClick = { finish() },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                        .size(44.dp)
+                        .border(2.dp, Color.Black, CircleShape),
+                    shape = CircleShape,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Text("✕", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
