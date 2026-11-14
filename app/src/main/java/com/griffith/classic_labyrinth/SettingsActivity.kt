@@ -6,10 +6,8 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,6 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,89 +51,96 @@ fun SettingsScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp)
     ) {
-        // Top-Right Close Button
-        Button(
-            onClick = { activity?.finish() },
+        // Background Image
+        Image(
+            painter = painterResource(id = R.drawable.background_settings),
+            contentDescription = "Settings Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop // Ensures it fills the screen without white bars
+        )
+
+        // Content overlay container
+        Box(
             modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(44.dp)
-                .border(2.dp, Color.Black, CircleShape),
-            shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-            contentPadding = PaddingValues(0.dp)
+                .fillMaxSize()
+                .padding(21.dp)
         ) {
-            Text("✕", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        }
+            // Top-Right Close Button
+            Image(
+                painter = painterResource(id = R.drawable.button_exit),
+                contentDescription = "Close Settings",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(50.dp)
+                    .clickable { activity?.finish() }
+            )
 
         // 4 Setting Sliders
         Column(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .align(Alignment.TopStart)
-                .padding(top = 2.dp),
+                .padding(top = 50.dp),
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             SettingRow(
-                label = "Master volume",
+                imageResId = R.drawable.settings_mastervolume,
                 value = masterVolume,
                 onValueChange = { masterVolume = it })
             SettingRow(
-                label = "Music volume", value = musicVolume, onValueChange = { musicVolume = it })
-            SettingRow(label = "FX Volume", value = fxVolume, onValueChange = { fxVolume = it })
+                imageResId = R.drawable.settings_musicvolume,
+                value = musicVolume,
+                onValueChange = { musicVolume = it })
             SettingRow(
-                label = "Sensitivity", value = sensitivity, onValueChange = { sensitivity = it })
+                imageResId = R.drawable.settings_fxvolume, 
+                value = fxVolume, 
+                onValueChange = { fxVolume = it })
+            SettingRow(
+                imageResId = R.drawable.settings_sensitivity, 
+                value = sensitivity, 
+                onValueChange = { sensitivity = it })
         }
 
         // Calibrate Accelerometer Button
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(all = 1.dp)
+                .padding(end = 5.dp)
         ) {
-            Button(
-                onClick = {
-                    //Calibarte
-                },
-                modifier = Modifier.border(2.dp, Color.Black, RoundedCornerShape(20.dp)),
-                shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
-            ) {
-                Text(
-                    text = "Calibrate",
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 15.sp
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.button_calibrate),
+                contentDescription = "Calibrate Accelerometer",
+                modifier = Modifier
+                    .height(60.dp)
+                    .clickable {
+                        // Calibrate
+                    }
+            )
         }
     }
+}
 }
 
 @Composable
 fun SettingRow(
-    label: String, value: Float, onValueChange: (Float) -> Unit
+    imageResId: Int, value: Float, onValueChange: (Float) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
-        // Label on the left
-        Box(
+        // Image Label on the left
+        Image(
+            painter = painterResource(id = imageResId),
+            contentDescription = "Setting Label",
+            contentScale = ContentScale.Fit,
             modifier = Modifier
-                .width(170.dp)
-                .border(2.dp, Color.Black, RoundedCornerShape(20.dp))
-                .background(Color.Magenta, RoundedCornerShape(20.dp))
-                .padding(horizontal = 14.dp, vertical = 8.dp),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            Text(
-                text = label, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black
-            )
-        }
+                .width(135.dp)
+                .height(67.5.dp)
+                .padding(start = 10.dp)
+        )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(10.dp))
 
         // Slider on the right
         Slider(
@@ -139,9 +148,9 @@ fun SettingRow(
             onValueChange = onValueChange,
             modifier = Modifier.weight(1f),
             colors = SliderDefaults.colors(
-                thumbColor = Color.Red,
-                activeTrackColor = Color.Black,
-                inactiveTrackColor = Color.LightGray
+                thumbColor = Color(red = 43, green = 39, blue = 29), // Gold/Amber thumb
+                activeTrackColor = Color(red = 43, green = 39, blue = 29), // Gold/Amber track
+                inactiveTrackColor = Color.DarkGray,  // Dark un-filled track
             )
         )
     }
