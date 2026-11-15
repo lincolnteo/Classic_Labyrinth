@@ -26,6 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 
 class LevelsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,146 +63,149 @@ fun LevelsScreen() {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(16.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
-        // Top-Right Close Button
-        Button(
-            onClick = { activity?.finish() },
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(44.dp)
-                .border(2.dp, Color.Black, CircleShape),
-            shape = CircleShape,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-            contentPadding = PaddingValues(0.dp)
-        ) {
-            Text("✕", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-        }
-
-        // Title
-        Text(
-            text = "Select Stage",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            modifier = Modifier.align(Alignment.TopStart)
+        // Background Image
+        Image(
+            painter = painterResource(id = R.drawable.background_levels),
+            contentDescription = "Levels Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop // Ensures the image stretches to fill screen edges
         )
 
-        // Left Grid Levels and Right Info Panel
-        Row(
+        // Content container
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 50.dp, bottom = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
         ) {
-            // Left Side 3x6 Level Grid 3 columns, 6 rows = 18 level
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+            // Top-Right Close Button
+            Button(
+                onClick = { activity?.finish() },
                 modifier = Modifier
-                    .weight(1.3f)
-                    .fillMaxHeight(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = PaddingValues(4.dp)
+                    .align(Alignment.TopEnd)
+                    .size(44.dp)
+                    .border(2.dp, Color.Black, CircleShape),
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                contentPadding = PaddingValues(0.dp)
             ) {
-                items(levels) { (levelNum, state) ->
-                    val isSelected = (selectedLevel == levelNum)
-
-                    // Determine color based on status
-                    val buttonColor = when {
-                        state == "completed" -> Color.Green
-                        isSelected -> Color.Cyan
-                        state == "unlocked" -> Color.LightGray
-                        else -> Color.Red
-                    }
-
-                    // if level selected it turns cyan with a black border
-                    Box(
-                        modifier = Modifier
-                            .height(55.dp)
-                            .border(
-                                width = if (isSelected) 3.dp else 2.dp,
-                                color = if (isSelected) Color.Black else Color.DarkGray,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .background(buttonColor, RoundedCornerShape(12.dp))
-                            .clickable {
-                                // Only click if its not locked
-                                if (state != "locked") {
-                                    selectedLevel = levelNum
-                                }
-                            }, contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "$levelNum",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp
-                        )
-                    }
-                }
+                Text("✕", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
 
-            // Stage Info Box and Start Game Button
-            Column(
+            // Left Grid Levels and Right Info Panel
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .border(2.dp, Color.Black, RoundedCornerShape(16.dp))
-                    .background(Color.White, RoundedCornerShape(16.dp))
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .fillMaxSize()
+                    .padding(top = 50.dp, bottom = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                // Left Side 3x6 Level Grid 3 columns, 6 rows = 18 level
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier
+                        .weight(1.3f)
+                        .fillMaxHeight(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(4.dp)
                 ) {
-                    Text(
-                        text = "Stage Details",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Level: $selectedLevel",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.DarkGray
-                    )
-                    Text(
-                        text = "Objective: Collect all token",
-                        fontSize = 15.sp,
-                        color = Color.DarkGray
-                    )
-                    Text(text = "Traps: 4 holes", fontSize = 15.sp, color = Color.DarkGray)
-                    Text(text = "Reward: 200 coins", fontSize = 15.sp, color = Color.DarkGray)
+                    items(levels) { (levelNum, state) ->
+                        val isSelected = (selectedLevel == levelNum)
+
+                        // Determine color based on status
+                        val buttonColor = when {
+                            state == "completed" -> Color.Green
+                            isSelected -> Color.Cyan
+                            state == "unlocked" -> Color.LightGray
+                            else -> Color.Red
+                        }
+
+                        // if level selected it turns cyan with a black border
+                        Box(
+                            modifier = Modifier
+                                .height(55.dp)
+                                .border(
+                                    width = if (isSelected) 3.dp else 2.dp,
+                                    color = if (isSelected) Color.Black else Color.DarkGray,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .background(buttonColor, RoundedCornerShape(12.dp))
+                                .clickable {
+                                    // Only click if its not locked
+                                    if (state != "locked") {
+                                        selectedLevel = levelNum
+                                    }
+                                }, contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "$levelNum",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        }
+                    }
                 }
 
-                // Start Game Button
-                Button(
-                    onClick = {
-                        val intent = Intent(activity, GameActivity::class.java).apply {
-                            putExtra("EXTRA_LEVEL_ID", selectedLevel)
-                        }
-                        activity?.startActivity(intent)
-                    },
+                // Stage Info Box and Start Game Button
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                        .border(2.dp, Color.Black, RoundedCornerShape(25.dp)),
-                    shape = RoundedCornerShape(25.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .border(2.dp, Color.Black, RoundedCornerShape(16.dp))
+                        .background(Color.White, RoundedCornerShape(16.dp))
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "Start Game!",
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Text(
+                            text = "Stage Details",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Level: $selectedLevel",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.DarkGray
+                        )
+                        Text(
+                            text = "Objective: Collect all token",
+                            fontSize = 15.sp,
+                            color = Color.DarkGray
+                        )
+                        Text(text = "Traps: 4 holes", fontSize = 15.sp, color = Color.DarkGray)
+                        Text(text = "Reward: 200 coins", fontSize = 15.sp, color = Color.DarkGray)
+                    }
+
+                    // Start Game Button
+                    Button(
+                        onClick = {
+                            val intent = Intent(activity, GameActivity::class.java).apply {
+                                putExtra("EXTRA_LEVEL_ID", selectedLevel)
+                            }
+                            activity?.startActivity(intent)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .border(2.dp, Color.Black, RoundedCornerShape(25.dp)),
+                        shape = RoundedCornerShape(25.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
+                    ) {
+                        Text(
+                            text = "Start Game!",
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                    }
                 }
             }
         }
