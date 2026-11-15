@@ -7,14 +7,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -80,18 +78,14 @@ fun LevelsScreen() {
                 .padding(16.dp)
         ) {
             // Top-Right Close Button
-            Button(
-                onClick = { activity?.finish() },
+            Image(
+                painter = painterResource(id = R.drawable.button_exit),
+                contentDescription = "Close Levels",
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(44.dp)
-                    .border(2.dp, Color.Black, CircleShape),
-                shape = CircleShape,
-                colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text("✕", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
+                    .size(60.dp) // Standard size for this image button in other screens
+                    .clickable { activity?.finish() } // Triggers the Android activity finish loop
+            )
 
             // Left Grid Levels and Right Info Panel
             Row(
@@ -106,7 +100,8 @@ fun LevelsScreen() {
                     columns = GridCells.Fixed(3),
                     modifier = Modifier
                         .weight(1.3f)
-                        .fillMaxHeight(),
+                        .fillMaxHeight()
+                        .padding(top = 10.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(4.dp)
@@ -114,24 +109,35 @@ fun LevelsScreen() {
                     items(levels) { (levelNum, state) ->
                         val isSelected = (selectedLevel == levelNum)
 
-                        // Determine color based on status
-                        val buttonColor = when {
-                            state == "completed" -> Color.Green
-                            isSelected -> Color.Cyan
-                            state == "unlocked" -> Color.LightGray
-                            else -> Color.Red
+                        val imageRes = when (levelNum) {
+                            1 -> R.drawable.level_1
+                            2 -> R.drawable.level_2
+                            3 -> R.drawable.level_3
+                            4 -> R.drawable.level_4
+                            5 -> R.drawable.level_5
+                            6 -> R.drawable.level_6
+                            7 -> R.drawable.level_7
+                            8 -> R.drawable.level_8
+                            9 -> R.drawable.level_9
+                            10 -> R.drawable.level_10
+                            11 -> R.drawable.level_11
+                            12 -> R.drawable.level_12
+                            13 -> R.drawable.level_13
+                            14 -> R.drawable.level_14
+                            15 -> R.drawable.level_15
+                            16 -> R.drawable.level_16
+                            17 -> R.drawable.level_17
+                            18 -> R.drawable.level_18
+                            else -> R.drawable.level_1
                         }
 
-                        // if level selected it turns cyan with a black border
+                        // Determine image alpha (faded if locked)
+                        val imageAlpha = if (state == "locked") 0.5f else 1.0f
+
+                        // if level selected it has a cyan border
                         Box(
                             modifier = Modifier
-                                .height(55.dp)
-                                .border(
-                                    width = if (isSelected) 3.dp else 2.dp,
-                                    color = if (isSelected) Color.Black else Color.DarkGray,
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .background(buttonColor, RoundedCornerShape(12.dp))
+                                .height(55.dp) // Restore original button height
                                 .clickable {
                                     // Only click if its not locked
                                     if (state != "locked") {
@@ -139,11 +145,18 @@ fun LevelsScreen() {
                                     }
                                 }, contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "$levelNum",
-                                color = Color.Black,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp
+                            Image(
+                                painter = painterResource(id = imageRes),
+                                contentDescription = "Level $levelNum",
+                                modifier = Modifier
+                                    .fillMaxHeight() // Make the image fill the vertical space
+                                    .border(
+                                        width = if (isSelected) 3.dp else 0.dp,
+                                        color = if (isSelected) Color.Cyan else Color.Transparent,
+                                        shape = RoundedCornerShape(12.dp)
+                                    ),
+                                contentScale = ContentScale.Fit, // Preserve original aspect ratio inside the box
+                                alpha = imageAlpha
                             )
                         }
                     }
@@ -153,59 +166,70 @@ fun LevelsScreen() {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight()
-                        .border(2.dp, Color.Black, RoundedCornerShape(16.dp))
-                        .background(Color.White, RoundedCornerShape(16.dp))
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
+                        .fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    // Level Details Plank
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f) // Takes up remaining space above the start button
+                            .padding(bottom = 8.dp), contentAlignment = Alignment.TopCenter
                     ) {
-                        Text(
-                            text = "Stage Details",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
+                        // Background Image for Stage Details
+                        Image(
+                            painter = painterResource(id = R.drawable.level_details),
+                            contentDescription = "Level Details Background",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "Level: $selectedLevel",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.DarkGray
-                        )
-                        Text(
-                            text = "Objective: Collect all token",
-                            fontSize = 15.sp,
-                            color = Color.DarkGray
-                        )
-                        Text(text = "Traps: 4 holes", fontSize = 15.sp, color = Color.DarkGray)
-                        Text(text = "Reward: 200 coins", fontSize = 15.sp, color = Color.DarkGray)
+
+                        // Content overlay text (centered horizontally, aligned down into the boxes)
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 70.dp), // Push all the text down to align with the empty slots in the image
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.height(20.dp)) // Space down to Objective area
+                            Text(
+                                text = "Collect all tokens",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Spacer(modifier = Modifier.height(20.dp)) // Space down to Traps area
+                            Text(
+                                text = "4 holes",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                            Spacer(modifier = Modifier.height(20.dp)) // Space down to Rewar" area
+                            Text(
+                                text = "200 coins", // Removed the "Reward:" prefix
+                                fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White
+                            )
+                        }
                     }
 
                     // Start Game Button
-                    Button(
-                        onClick = {
-                            val intent = Intent(activity, GameActivity::class.java).apply {
-                                putExtra("EXTRA_LEVEL_ID", selectedLevel)
-                            }
-                            activity?.startActivity(intent)
-                        },
+                    Image(
+                        painter = painterResource(id = R.drawable.level_startgame),
+                        contentDescription = "Start Game",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(50.dp)
-                            .border(2.dp, Color.Black, RoundedCornerShape(25.dp)),
-                        shape = RoundedCornerShape(25.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
-                    ) {
-                        Text(
-                            text = "Start Game!",
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
-                    }
+                            .height(80.dp)
+                            .clickable {
+                                val intent = Intent(activity, GameActivity::class.java).apply {
+                                    putExtra("EXTRA_LEVEL_ID", selectedLevel)
+                                }
+                                activity?.startActivity(intent)
+                            },
+                        contentScale = ContentScale.Fit
+                    )
                 }
             }
         }
