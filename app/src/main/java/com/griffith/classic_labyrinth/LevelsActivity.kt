@@ -191,27 +191,27 @@ fun LevelsScreen() {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(top = 70.dp), // Push all the text down to align with the empty slots in the image
+                                .padding(top = 50.dp), // Push all the text down to align with the empty slots in the image
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Spacer(modifier = Modifier.height(20.dp)) // Space down to Objective area
                             Text(
                                 text = "Collect all tokens",
-                                fontSize = 14.sp,
+                                fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
-                            Spacer(modifier = Modifier.height(20.dp)) // Space down to Traps area
+                            Spacer(modifier = Modifier.height(15.dp)) // Space down to Traps area
                             Text(
                                 text = "4 holes",
-                                fontSize = 14.sp,
+                                fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
-                            Spacer(modifier = Modifier.height(20.dp)) // Space down to Rewar" area
+                            Spacer(modifier = Modifier.height(15.dp))
                             Text(
-                                text = "200 coins", // Removed the "Reward:" prefix
+                                text = "200 coins",
                                 fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White
                             )
                         }

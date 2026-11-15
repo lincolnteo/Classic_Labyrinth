@@ -17,22 +17,15 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.border
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.activity.enableEdgeToEdge
 
 class GameActivity : ComponentActivity(), SensorEventListener {
@@ -91,19 +84,15 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                 }
 
                 // Top right exit button overlapping the canvas
-                Button(
-                    onClick = { finish() },
+                Image(
+                    painter = painterResource(id = R.drawable.button_exit),
+                    contentDescription = "Close Game",
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(16.dp)
-                        .size(44.dp)
-                        .border(2.dp, Color.Black, CircleShape),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text("✕", color = Color.Black, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                }
+                        .size(60.dp) // Standard size for this image button in other screens
+                        .clickable { finish() }
+                )
             }
         }
     }
