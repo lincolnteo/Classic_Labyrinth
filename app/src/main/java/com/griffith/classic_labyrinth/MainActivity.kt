@@ -29,6 +29,7 @@ import kotlin.jvm.java
 import androidx.compose.foundation.Image
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.activity.enableEdgeToEdge
 
 // Main Activity, entry point of the app
 class MainActivity : ComponentActivity() {
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MainMenuScreen()
+            enableEdgeToEdge()
         }
     }
 }

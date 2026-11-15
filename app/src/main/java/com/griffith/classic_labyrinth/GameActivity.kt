@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.activity.enableEdgeToEdge
 
 class GameActivity : ComponentActivity(), SensorEventListener {
 
@@ -51,8 +52,10 @@ class GameActivity : ComponentActivity(), SensorEventListener {
     private var screenHeight = 0f
     private val radius = 100f
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         // Get data phone tilt sensor
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -109,11 +112,16 @@ class GameActivity : ComponentActivity(), SensorEventListener {
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
 
-        val tiltLeftRight = event.values[0]
-        val tiltUpDown = event.values[1]
+        // In landscape mode the phone physical axes are rotated 90 degrees relative to the screen.
+        // The phone Y-axis (values[1]) becomes the screen Left/Right.
+        // The phone X-axis (values[0]) becomes the screen Up/Down.
+        val tiltLeftRight = event.values[1]
+        val tiltUpDown = event.values[0]
 
-        // Add tilt to speed
-        speedX = speedX - tiltLeftRight
+        // Adjust speed based on the tilt.
+        // Tilting Right positive Y should increase speedX (move right)
+        // Tilting Down positiveX should increase speedY (move down)
+        speedX = speedX + tiltLeftRight
         speedY = speedY + tiltUpDown
 
         // Slow the ball down by half
