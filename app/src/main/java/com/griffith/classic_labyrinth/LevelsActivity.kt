@@ -42,11 +42,10 @@ class LevelsActivity : ComponentActivity() {
 @Preview(showSystemUi = true)
 @Composable
 fun LevelsScreen() {
-    // Get context and cast to Activity so we can use activity?.finish() to close the screen
     val context = LocalContext.current
     val activity = context as? Activity
 
-    // Default to Level 2 at launch as requested
+    // Selected Level State
     var selectedLevel by remember { mutableIntStateOf(2) }
 
     // List of 18 levels with their status
@@ -70,7 +69,7 @@ fun LevelsScreen() {
             painter = painterResource(id = R.drawable.background_levels),
             contentDescription = "Levels Background",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop // Ensures the image stretches to fill screen edges
+            contentScale = ContentScale.Crop
         )
 
         // Content container
@@ -79,14 +78,17 @@ fun LevelsScreen() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Top-Right Close Button
+            // Close Button
             Image(
                 painter = painterResource(id = R.drawable.button_exit),
                 contentDescription = "Close Levels",
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(60.dp) // Standard size for this image button in other screens
-                    .clickable { activity?.finish() } // Triggers the Android activity finish loop
+                    .size(60.dp)
+                    .clickable { 
+                        SoundManager.playClick()
+                        activity?.finish() 
+                    } // Triggers the Android activity finish loop
             )
 
             // Left Grid Levels and Right Info Panel
@@ -143,6 +145,7 @@ fun LevelsScreen() {
                                 .clickable {
                                     // Only click if its not locked
                                     if (state != "locked") {
+                                        SoundManager.playClick()
                                         selectedLevel = levelNum
                                     }
                                 }, contentAlignment = Alignment.Center
@@ -225,6 +228,7 @@ fun LevelsScreen() {
                             .fillMaxWidth()
                             .height(80.dp)
                             .clickable {
+                                SoundManager.playClick()
                                 val intent = Intent(activity, GameActivity::class.java).apply {
                                     putExtra("EXTRA_LEVEL_ID", selectedLevel)
                                 }

@@ -30,7 +30,7 @@ import androidx.activity.enableEdgeToEdge
 
 class GameActivity : ComponentActivity(), SensorEventListener {
 
-    // Initialise sensur
+    // Sensor Initialization
     private lateinit var sensorManager: SensorManager
     private var mySensor: Sensor? = null
 
@@ -45,7 +45,6 @@ class GameActivity : ComponentActivity(), SensorEventListener {
     private var screenHeight = 0f
     private val radius = 100f
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -57,8 +56,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         // background and black ball
         setContent {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 // Background Image
                 Image(
@@ -77,9 +75,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                     screenHeight = size.height
 
                     drawCircle(
-                        color = Color.Black,
-                        radius = radius,
-                        center = Offset(ballX, ballY)
+                        color = Color.Black, radius = radius, center = Offset(ballX, ballY)
                     )
                 }
 
@@ -90,9 +86,11 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(16.dp)
-                        .size(60.dp) // Standard size for this image button in other screens
-                        .clickable { finish() }
-                )
+                        .size(60.dp)
+                        .clickable {
+                            SoundManager.playClick()
+                            finish()
+                        })
             }
         }
     }

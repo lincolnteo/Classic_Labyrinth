@@ -40,7 +40,7 @@ fun SettingsScreen() {
     val activity = context as? Activity
 
     // Slider default position
-    var masterVolume by remember { mutableFloatStateOf(0.5f) }
+    var masterVolume by remember { mutableFloatStateOf(1f) }
     var musicVolume by remember { mutableFloatStateOf(0.5f) }
     var fxVolume by remember { mutableFloatStateOf(0.5f) }
     var sensitivity by remember { mutableFloatStateOf(0.5f) }
@@ -71,7 +71,10 @@ fun SettingsScreen() {
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .size(50.dp)
-                    .clickable { activity?.finish() }
+                    .clickable { 
+                        SoundManager.playClick()
+                        activity?.finish() 
+                    }
             )
 
         // 4 Setting Sliders
@@ -85,15 +88,26 @@ fun SettingsScreen() {
             SettingRow(
                 imageResId = R.drawable.settings_mastervolume,
                 value = masterVolume,
-                onValueChange = { masterVolume = it })
+                onValueChange = { 
+                    masterVolume = it 
+                    SoundManager.masterVolume = it
+                    SoundManager.updateVolumes()
+                })
             SettingRow(
                 imageResId = R.drawable.settings_musicvolume,
                 value = musicVolume,
-                onValueChange = { musicVolume = it })
+                onValueChange = { 
+                    musicVolume = it 
+                    SoundManager.musicVolume = it
+                    SoundManager.updateVolumes()
+                })
             SettingRow(
                 imageResId = R.drawable.settings_fxvolume, 
                 value = fxVolume, 
-                onValueChange = { fxVolume = it })
+                onValueChange = { 
+                    fxVolume = it 
+                    SoundManager.fxVolume = it
+                })
             SettingRow(
                 imageResId = R.drawable.settings_sensitivity, 
                 value = sensitivity, 
@@ -112,6 +126,7 @@ fun SettingsScreen() {
                 modifier = Modifier
                     .height(60.dp)
                     .clickable {
+                        SoundManager.playClick()
                         // Calibrate
                     }
             )

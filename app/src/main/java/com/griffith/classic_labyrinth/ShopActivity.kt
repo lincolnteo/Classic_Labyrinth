@@ -158,7 +158,10 @@ fun ShopScreen() {
                     modifier = Modifier
                         .size(60.dp)
                         .padding(end = 10.dp)
-                        .clickable { activity?.finish() } // Triggers the Android activity finish loop
+                        .clickable { 
+                            SoundManager.playClick()
+                            activity?.finish() 
+                        } // Triggers the Android activity finish loop
                 )
             }
 
@@ -197,6 +200,7 @@ fun ShopScreen() {
                             .fillMaxWidth()
                             .height(55.dp)
                             .clickable {
+                                SoundManager.playClick()
                                 selectedCategory = category
                                 targetScrollIndex = allShopItems.indexOfFirst { it.category == category }
                             }, // update status when clicked
@@ -213,7 +217,7 @@ fun ShopScreen() {
                     .align(Alignment.CenterStart)
                     .padding(
                         start = 200.dp, top = 80.dp, end = 20.dp, bottom = 20.dp
-                    ) // Increased top padding to 80.dp to clip grid below coin count
+                    )
                     .fillMaxSize()
             ) {
                 LazyVerticalGrid(
@@ -229,7 +233,10 @@ fun ShopScreen() {
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.clickable { selectedItem = item }
+                            modifier = Modifier.clickable { 
+                                SoundManager.playClick()
+                                selectedItem = item 
+                            }
                         ) {
                             Image(
                                 painter = painterResource(id = item.imageRes),
@@ -261,7 +268,7 @@ fun ShopScreen() {
                     modifier = Modifier
                         .height(50.dp)
                         .width(160.dp)
-                        .clickable {})
+                        .clickable { SoundManager.playClick() })
             }
         }
     }

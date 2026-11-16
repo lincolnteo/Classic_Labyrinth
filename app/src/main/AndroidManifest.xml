@@ -15,37 +15,35 @@
             android:name=".MainActivity"
             android:exported="true"
             android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity,DiscouragedApi"
             android:theme="@style/Theme.Classic_Labyrinth"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="LockedOrientationActivity,DiscouragedApi">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".GameActivity"
+            android:exported="false"
             android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity,DiscouragedApi"
-            android:exported="false" />
-
+            tools:ignore="LockedOrientationActivity,DiscouragedApi" />
         <activity
             android:name=".SettingsActivity"
+            android:exported="false"
             android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity,DiscouragedApi"
-            android:exported="false" />
+            tools:ignore="LockedOrientationActivity,DiscouragedApi" />
         <activity
             android:name=".ShopActivity"
+            android:exported="false"
             android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity,DiscouragedApi"
-            android:exported="false" />
+            tools:ignore="LockedOrientationActivity,DiscouragedApi" />
         <activity
             android:name=".LevelsActivity"
+            android:exported="false"
             android:screenOrientation="landscape"
-            tools:ignore="LockedOrientationActivity,DiscouragedApi"
-            android:exported="false"/>
+            tools:ignore="LockedOrientationActivity,DiscouragedApi" />
     </application>
 
 </manifest>

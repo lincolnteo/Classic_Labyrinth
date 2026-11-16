@@ -35,6 +35,10 @@ import androidx.activity.enableEdgeToEdge
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Initialize sound manager here instead since we removed the App class
+        SoundManager.init(this.applicationContext)
+        SoundManager.resumeMusic()
+        
         setContent {
             MainMenuScreen()
             enableEdgeToEdge()
@@ -83,15 +87,42 @@ fun MainMenuScreen() {
                         painter = painterResource(id = R.drawable.coinbar),
                         contentDescription = "Coin Bar",
                         contentScale = ContentScale.FillBounds,
-                        modifier = Modifier.size(width = 280.dp, height = 50.dp)
+                        modifier = Modifier.size(width = 320.dp, height = 50.dp) // Widen the coin bar
                     )
-                    Text(
-                        text = "level: XX   XP: XX/100   Coins: XXXXX",
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                    )
+                    
+                    // Align the text into the three wooden slots
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.35f), // Scale to fit the image bounds
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Level slot
+                        Text(
+                            text = "XX", 
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            modifier = Modifier.padding(start = 50.dp)
+                        )
+                        
+                        // XP slot
+                        Text(
+                            text = "XXX/100",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(start = 65.dp)
+                        )
+                        
+                        // Coins slot
+                        Text(
+                            text = "XXXXX",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 10.sp,
+                            modifier = Modifier.padding(start = 60.dp)
+                        )
+                    }
                 }
 
                 // Settings button: Opens SettingsActivity
@@ -102,6 +133,7 @@ fun MainMenuScreen() {
                         .padding(end = 5.dp) // Move right
                         .size(60.dp)
                         .clickable {
+                            SoundManager.playClick()
                             val intent = Intent(context, SettingsActivity::class.java)
                             context.startActivity(intent)
                         })
@@ -124,6 +156,7 @@ fun MainMenuScreen() {
                         .padding(start = 10.dp) // Move slightly toward center
                         .size(100.dp)
                         .clickable {
+                            SoundManager.playClick()
                             val intent = Intent(context, ShopActivity::class.java)
                             context.startActivity(intent)
                         })
@@ -135,6 +168,7 @@ fun MainMenuScreen() {
                     modifier = Modifier
                         .size(100.dp)
                         .clickable {
+                            SoundManager.playClick()
                             val intent = Intent(// implicit intent
                                 Intent.ACTION_VIEW,
                                 Uri.parse("https://play.google.com/store/apps/details?id=com.maithu.griffith")
@@ -150,6 +184,7 @@ fun MainMenuScreen() {
                         .padding(end = 10.dp) // Move slightly toward center
                         .size(100.dp)
                         .clickable {
+                            SoundManager.playClick()
                             val intent = Intent(context, LevelsActivity::class.java)
                             context.startActivity(intent)
                         })
