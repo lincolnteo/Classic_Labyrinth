@@ -1,5 +1,5 @@
 package com.griffith.classic_labyrinth
-// TODO: music does not stop even when phone it off
+
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -18,6 +18,9 @@ object SoundManager {
     var masterVolume = 1.0f
     var musicVolume = 1.0f
     var fxVolume = 1.0f
+
+    // var for detect internal navigation so music wont pause when changing screens
+    var isSwitchingScreens = false
 
     fun init(context: Context) {
         // Setup SoundPool for FX so it wont cut off the audio
@@ -41,13 +44,11 @@ object SoundManager {
         }
     }
 
-
     //Plays the UI click sound effect.
     fun playClick() {
         val volume = masterVolume * fxVolume
         soundPool?.play(clickSoundId, volume, volume, 1, 0, 1f)
     }
-
 
     //Pauses the background music
 
@@ -57,13 +58,11 @@ object SoundManager {
         }
     }
 
-
     // Resumes the background music from where it left off
 
     fun resumeMusic() {
         bgPlayer?.start()
     }
-
 
     //applies the current volume settings to the playing music
     // call this whenever the user adjusts in the settings

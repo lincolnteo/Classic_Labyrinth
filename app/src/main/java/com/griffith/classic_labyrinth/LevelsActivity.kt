@@ -37,6 +37,18 @@ class LevelsActivity : ComponentActivity() {
             enableEdgeToEdge()
         }
     }
+    override fun onResume() {
+        super.onResume()
+        SoundManager.isSwitchingScreens = false
+        SoundManager.resumeMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!SoundManager.isSwitchingScreens) {
+            SoundManager.pauseMusic()
+        }
+    }
 }
 
 @Preview(showSystemUi = true)
@@ -87,6 +99,7 @@ fun LevelsScreen() {
                     .size(60.dp)
                     .clickable { 
                         SoundManager.playClick()
+                        SoundManager.isSwitchingScreens = true
                         activity?.finish() 
                     } // Triggers the Android activity finish loop
             )
@@ -229,6 +242,7 @@ fun LevelsScreen() {
                             .height(80.dp)
                             .clickable {
                                 SoundManager.playClick()
+                                SoundManager.isSwitchingScreens = true
                                 val intent = Intent(activity, GameActivity::class.java).apply {
                                     putExtra("EXTRA_LEVEL_ID", selectedLevel)
                                 }

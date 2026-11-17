@@ -35,13 +35,26 @@ import androidx.activity.enableEdgeToEdge
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Initialize sound manager here instead since we removed the App class
+        // Initialize sound manager
         SoundManager.init(this.applicationContext)
         SoundManager.resumeMusic()
         
         setContent {
             MainMenuScreen()
             enableEdgeToEdge()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        SoundManager.isSwitchingScreens = false
+        SoundManager.resumeMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!SoundManager.isSwitchingScreens) {
+            SoundManager.pauseMusic()
         }
     }
 }
@@ -134,6 +147,7 @@ fun MainMenuScreen() {
                         .size(60.dp)
                         .clickable {
                             SoundManager.playClick()
+                            SoundManager.isSwitchingScreens = true
                             val intent = Intent(context, SettingsActivity::class.java)
                             context.startActivity(intent)
                         })
@@ -157,6 +171,7 @@ fun MainMenuScreen() {
                         .size(100.dp)
                         .clickable {
                             SoundManager.playClick()
+                            SoundManager.isSwitchingScreens = true
                             val intent = Intent(context, ShopActivity::class.java)
                             context.startActivity(intent)
                         })
@@ -185,6 +200,7 @@ fun MainMenuScreen() {
                         .size(100.dp)
                         .clickable {
                             SoundManager.playClick()
+                            SoundManager.isSwitchingScreens = true
                             val intent = Intent(context, LevelsActivity::class.java)
                             context.startActivity(intent)
                         })

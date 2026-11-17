@@ -102,16 +102,19 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                             isGamePaused = false 
                         },
                         onSettings = { // go to setting explicit
+                            SoundManager.isSwitchingScreens = true
                             val intent = Intent(this@GameActivity, SettingsActivity::class.java)
                             startActivity(intent)
                         },
                         onExit ={ // go to main menu AKA exit explicit
+                            SoundManager.isSwitchingScreens = true
                             val intent = Intent(this@GameActivity, LevelsActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
                             finish()
                         },
                         onMainMenu = { // go to main menu AKA exit explicit
+                            SoundManager.isSwitchingScreens = true
                             val intent = Intent(this@GameActivity, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
@@ -175,15 +178,18 @@ class GameActivity : ComponentActivity(), SensorEventListener {
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
-    // Turn sensor on when opening app
     override fun onResume() {
         super.onResume()
+        SoundManager.isSwitchingScreens = false
+        SoundManager.resumeMusic()
         sensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_GAME)
     }
 
-    // Turn sensor off when closing app
     override fun onPause() {
         super.onPause()
         sensorManager.unregisterListener(this)
+        if (!SoundManager.isSwitchingScreens) {
+            SoundManager.pauseMusic()
+        }
     }
 }

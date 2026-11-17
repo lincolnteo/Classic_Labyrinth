@@ -29,6 +29,18 @@ class SettingsActivity : ComponentActivity() {
             enableEdgeToEdge()
         }
     }
+    override fun onResume() {
+        super.onResume()
+        SoundManager.isSwitchingScreens = false
+        SoundManager.resumeMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!SoundManager.isSwitchingScreens) {
+            SoundManager.pauseMusic()
+        }
+    }
 }
 
 @Preview
@@ -73,6 +85,7 @@ fun SettingsScreen() {
                     .size(50.dp)
                     .clickable { 
                         SoundManager.playClick()
+                        SoundManager.isSwitchingScreens = true
                         activity?.finish() 
                     }
             )

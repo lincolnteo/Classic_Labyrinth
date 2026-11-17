@@ -40,6 +40,18 @@ class ShopActivity : ComponentActivity() {
             enableEdgeToEdge()
         }
     }
+    override fun onResume() {
+        super.onResume()
+        SoundManager.isSwitchingScreens = false
+        SoundManager.resumeMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!SoundManager.isSwitchingScreens) {
+            SoundManager.pauseMusic()
+        }
+    }
 }
 
 data class ShopItem(val id: Int, val idName: String, val imageRes: Int, val category: String)
@@ -172,6 +184,7 @@ fun ShopScreen() {
                             .padding(end = 10.dp)
                             .clickable {
                                 SoundManager.playClick()
+                                SoundManager.isSwitchingScreens = true
                                 activity?.finish()
                             } // Triggers the Android activity finish loop
                     )
