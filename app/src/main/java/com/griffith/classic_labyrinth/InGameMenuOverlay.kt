@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun InGameMenuOverlay(
-    onResume: () -> Unit, onSettings: () -> Unit, onMainMenu: () -> Unit
+    onResume: () -> Unit, onSettings: () -> Unit, onMainMenu: () -> Unit, onExit: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -73,6 +73,21 @@ fun InGameMenuOverlay(
                         },
                     contentScale = ContentScale.Fit
                 )
+                // Exit button
+                // Exit to Levels
+                Image(
+                    painter = painterResource(id = R.drawable.button_exittext),
+                    contentDescription = "Exit",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                        .clickable {
+                            SoundManager.playClick()
+                            onExit()
+                        },
+                    contentScale = ContentScale.Fit
+                )
+
                 // resume button
                 Image(
                     painter = painterResource(id = R.drawable.button_resume),

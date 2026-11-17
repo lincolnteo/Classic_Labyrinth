@@ -105,6 +105,12 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                             val intent = Intent(this@GameActivity, SettingsActivity::class.java)
                             startActivity(intent)
                         },
+                        onExit ={ // go to main menu AKA exit explicit
+                            val intent = Intent(this@GameActivity, LevelsActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                            finish()
+                        },
                         onMainMenu = { // go to main menu AKA exit explicit
                             val intent = Intent(this@GameActivity, MainActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK

@@ -1,5 +1,5 @@
 // Lincoln Teo Ming Kern - 3122215
-// github repo: https://github.com/lincolnteo/Classic_Labyrinth
+// GitHub repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import android.app.Activity
@@ -42,44 +42,44 @@ class ShopActivity : ComponentActivity() {
     }
 }
 
-data class ShopItem(val id: String, val imageRes: Int, val category: String)
+data class ShopItem(val id: Int, val idName: String, val imageRes: Int, val category: String)
 
 val allShopItems = listOf(
     // Animals
-    ShopItem("Bear", R.drawable.shop_animals_bear, "Animals"),
-    ShopItem("Bull", R.drawable.shop_animals_bull, "Animals"),
-    ShopItem("Eagle", R.drawable.shop_animals_eagle, "Animals"),
-    ShopItem("Fox", R.drawable.shop_animals_fox, "Animals"),
-    ShopItem("Gorilla", R.drawable.shop_animals_gorrila, "Animals"),
-    ShopItem("Lion", R.drawable.shop_animals_lion, "Animals"),
-    ShopItem("Panda", R.drawable.shop_animals_panda, "Animals"),
-    ShopItem("Shark", R.drawable.shop_animals_shark, "Animals"),
-    ShopItem("Tiger", R.drawable.shop_animals_tiger, "Animals"),
-    ShopItem("Wolf", R.drawable.shop_animals_wolf, "Animals"),
+    ShopItem(1,"Bear", R.drawable.shop_animals_bear, "Animals"),
+    ShopItem(2,"Bull", R.drawable.shop_animals_bull, "Animals"),
+    ShopItem(3,"Eagle", R.drawable.shop_animals_eagle, "Animals"),
+    ShopItem(4,"Fox", R.drawable.shop_animals_fox, "Animals"),
+    ShopItem(5,"Gorilla", R.drawable.shop_animals_gorrila, "Animals"),
+    ShopItem(6,"Lion", R.drawable.shop_animals_lion, "Animals"),
+    ShopItem(7,"Panda", R.drawable.shop_animals_panda, "Animals"),
+    ShopItem(8,"Shark", R.drawable.shop_animals_shark, "Animals"),
+    ShopItem(9,"Tiger", R.drawable.shop_animals_tiger, "Animals"),
+    ShopItem(10,"Wolf", R.drawable.shop_animals_wolf, "Animals"),
     // Woods
-    ShopItem("Brown Oak", R.drawable.shop_wood_brownoak, "Woods"),
-    ShopItem("Coastal Drift", R.drawable.shop_wood_coastaldrift, "Woods"),
-    ShopItem("Dark Oak", R.drawable.shop_wood_darkoak, "Woods"),
-    ShopItem("Ebony", R.drawable.shop_wood_ebony, "Woods"),
-    ShopItem("Golden Maple", R.drawable.shop_wood_goldenmaple, "Woods"),
-    ShopItem("Grey Oak", R.drawable.shop_wood_greyoak, "Woods"),
-    ShopItem("Natural Pine", R.drawable.shop_wood_naturalpine, "Woods"),
-    ShopItem("Red Cedar", R.drawable.shop_wood_redcedar, "Woods"),
-    ShopItem("Rich Mahogany", R.drawable.shop_wood_richmahogany, "Woods"),
-    ShopItem("Rustic Walnut", R.drawable.shop_wood_rusticwalnut, "Woods"),
-    ShopItem("Spiced Cherry", R.drawable.shop_wood_spicedcherry, "Woods"),
-    ShopItem("Weathered Grey", R.drawable.shop_wood_weatheredgrey, "Woods"),
+    ShopItem(11,"Brown Oak", R.drawable.shop_wood_brownoak, "Woods"),
+    ShopItem(12,"Coastal Drift", R.drawable.shop_wood_coastaldrift, "Woods"),
+    ShopItem(13,"Dark Oak", R.drawable.shop_wood_darkoak, "Woods"),
+    ShopItem(14,"Ebony", R.drawable.shop_wood_ebony, "Woods"),
+    ShopItem(15,"Golden Maple", R.drawable.shop_wood_goldenmaple, "Woods"),
+    ShopItem(16,"Grey Oak", R.drawable.shop_wood_greyoak, "Woods"),
+    ShopItem(17,"Natural Pine", R.drawable.shop_wood_naturalpine, "Woods"),
+    ShopItem(18,"Red Cedar", R.drawable.shop_wood_redcedar, "Woods"),
+    ShopItem(19,"Rich Mahogany", R.drawable.shop_wood_richmahogany, "Woods"),
+    ShopItem(20,"Rustic Walnut", R.drawable.shop_wood_rusticwalnut, "Woods"),
+    ShopItem(21,"Spiced Cherry", R.drawable.shop_wood_spicedcherry, "Woods"),
+    ShopItem(22,"Weathered Grey", R.drawable.shop_wood_weatheredgrey, "Woods"),
     // Metals
-    ShopItem("Age Bronze", R.drawable.shop_metals_agebronze, "Metals"),
-    ShopItem("Beaten Brass", R.drawable.shop_metals_beatenbrass, "Metals"),
-    ShopItem("Brushed Steel", R.drawable.shop_metals_brushedsteel, "Metals"),
-    ShopItem("Chrome", R.drawable.shop_metals_chrome, "Metals"),
-    ShopItem("Copper", R.drawable.shop_metals_copper, "Metals"),
-    ShopItem("Forged Iron", R.drawable.shop_metals_forgediron, "Metals"),
-    ShopItem("Galvanized Zinc", R.drawable.shop_metals_galvanizedzinc, "Metals"),
-    ShopItem("Metallic Blue", R.drawable.shop_metals_metallicblue, "Metals"),
-    ShopItem("Polished Gold", R.drawable.shop_metals_polishedgold, "Metals"),
-    ShopItem("Rusty Iron", R.drawable.shop_metals_rustyiron, "Metals")
+    ShopItem(23,"Age Bronze", R.drawable.shop_metals_agebronze, "Metals"),
+    ShopItem(24,"Beaten Brass", R.drawable.shop_metals_beatenbrass, "Metals"),
+    ShopItem(25,"Brushed Steel", R.drawable.shop_metals_brushedsteel, "Metals"),
+    ShopItem(26,"Chrome", R.drawable.shop_metals_chrome, "Metals"),
+    ShopItem(27,"Copper", R.drawable.shop_metals_copper, "Metals"),
+    ShopItem(28,"Forged Iron", R.drawable.shop_metals_forgediron, "Metals"),
+    ShopItem(29,"Galvanized Zinc", R.drawable.shop_metals_galvanizedzinc, "Metals"),
+    ShopItem(30,"Metallic Blue", R.drawable.shop_metals_metallicblue, "Metals"),
+    ShopItem(31,"Polished Gold", R.drawable.shop_metals_polishedgold, "Metals"),
+    ShopItem(32,"Rusty Iron", R.drawable.shop_metals_rustyiron, "Metals")
 )
 
 @Preview
@@ -243,27 +243,32 @@ fun ShopScreen() {
                 ) {
                     items(allShopItems) { item ->
                         val isSelectedItem = selectedItem == item
+                        // Temporary logic: Items with ID 1, 2, 3 are unlocked. Rest are locked.
+                        val isUnlocked = item.id in 1..3
+                        val Alpha = if (isUnlocked) 1.0f else 0.5f
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.clickable {
-                                SoundManager.playClick()
-                                selectedItem = item
+                                if (isUnlocked) {
+                                    SoundManager.playClick()
+                                    selectedItem = item
+                                }
                             }
                         ) {
                             Image(
                                 painter = painterResource(id = item.imageRes),
-                                contentDescription = item.id,
+                                contentDescription = item.idName,
                                 modifier = Modifier.size(100.dp),
                                 contentScale = ContentScale.Fit,
-                                alpha = if (isSelectedItem) blinkAlpha else 1f
+                                alpha = if (isSelectedItem) blinkAlpha else Alpha
                             )
                             Spacer(modifier = Modifier.height(4.dp))
                             Text(
-                                text = item.id,
+                                text = item.idName,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = Color.White.copy(alpha = Alpha)
                             )
                         }
                     }
