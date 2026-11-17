@@ -1,5 +1,5 @@
 package com.griffith.classic_labyrinth
-
+// TODO: music does not stop even when phone it off
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
@@ -20,7 +20,7 @@ object SoundManager {
     var fxVolume = 1.0f
 
     fun init(context: Context) {
-        // Setup SoundPool for FX
+        // Setup SoundPool for FX so it wont cut off the audio
         if (soundPool == null) {
             val audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
@@ -43,7 +43,6 @@ object SoundManager {
 
 
     //Plays the UI click sound effect.
-
     fun playClick() {
         val volume = masterVolume * fxVolume
         soundPool?.play(clickSoundId, volume, volume, 1, 0, 1f)

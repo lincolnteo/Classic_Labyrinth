@@ -13,6 +13,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.getValue
+import android.content.Intent
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
@@ -44,6 +46,8 @@ class GameActivity : ComponentActivity(), SensorEventListener {
     private var screenWidth = 0f
     private var screenHeight = 0f
     private val radius = 100f
+
+    private var isGamePaused by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,15 +93,33 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                         .size(60.dp)
                         .clickable {
                             SoundManager.playClick()
-                            finish()
+                            isGamePaused = true
                         })
+                // go to pause menu
+                if (isGamePaused) {
+                    InGameMenuOverlay(
+                        onResume = { // pasue game
+                            isGamePaused = false 
+                        },
+                        onSettings = { // go to setting explicit
+                            val intent = Intent(this@GameActivity, SettingsActivity::class.java)
+                            startActivity(intent)
+                        },
+                        onMainMenu = { // go to main menu AKA exit explicit
+                            val intent = Intent(this@GameActivity, MainActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                            startActivity(intent)
+                            finish()
+                        }
+                    )
+                }
             }
         }
     }
 
     // Runs every time the phone tilts
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event == null) return
+        if (event == null || isGamePaused) return
 
         // In landscape mode the phone physical axes are rotated 90 degrees relative to the screen.
         // The phone Y-axis (values[1]) becomes the screen Left/Right.
@@ -112,7 +134,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         speedY = speedY + tiltUpDown
 
         // Slow the ball down by half
-
+        // the sensitivity slider would change the number of this
         speedX = speedX * 0.7f
         speedY = speedY * 0.7f
 

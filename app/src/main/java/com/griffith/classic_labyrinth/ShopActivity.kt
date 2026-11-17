@@ -144,25 +144,38 @@ fun ShopScreen() {
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Top Right Coin Button
-                Image(
-                    painter = painterResource(id = R.drawable.button_coin),
-                    contentDescription = "Coins",
-                    modifier = Modifier.height(60.dp)
-                )
+                Box(contentAlignment = Alignment.TopEnd) {
+                    // Top Right Coin Button
+                    Image(
+                        painter = painterResource(id = R.drawable.button_coin),
+                        contentDescription = "Coins",
+                        modifier = Modifier
+                            .height(60.dp)
+                            .padding(end = 80.dp)
+                    )
+                    Text(
+                        text = "XXXX",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .padding(end = 120.dp, top = 10.dp)
+                            .align(Alignment.CenterEnd)
+                    )
 
-                // Top Right Exit Button
-                Image(
-                    painter = painterResource(id = R.drawable.button_exit),
-                    contentDescription = "Close Shop",
-                    modifier = Modifier
-                        .size(60.dp)
-                        .padding(end = 10.dp)
-                        .clickable { 
-                            SoundManager.playClick()
-                            activity?.finish() 
-                        } // Triggers the Android activity finish loop
-                )
+                    // Top Right Exit Button
+                    Image(
+                        painter = painterResource(id = R.drawable.button_exit),
+                        contentDescription = "Close Shop",
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(end = 10.dp)
+                            .clickable {
+                                SoundManager.playClick()
+                                activity?.finish()
+                            } // Triggers the Android activity finish loop
+                    )
+                }
             }
 
             // Animals, Woods, Metals Categories
@@ -233,9 +246,9 @@ fun ShopScreen() {
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.clickable { 
+                            modifier = Modifier.clickable {
                                 SoundManager.playClick()
-                                selectedItem = item 
+                                selectedItem = item
                             }
                         ) {
                             Image(

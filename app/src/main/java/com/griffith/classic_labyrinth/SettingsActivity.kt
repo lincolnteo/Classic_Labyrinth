@@ -161,8 +161,8 @@ fun SettingRow(
             onValueChange = onValueChange,
             modifier = Modifier.weight(1f),
             colors = SliderDefaults.colors(
-                thumbColor = Color(red = 43, green = 39, blue = 29), // Gold/Amber thumb
-                activeTrackColor = Color(red = 43, green = 39, blue = 29), // Gold/Amber track
+                thumbColor = Color(red = 43, green = 39, blue = 29), // muddish brown thumb
+                activeTrackColor = Color(red = 43, green = 39, blue = 29),// muddish brown
                 inactiveTrackColor = Color.DarkGray,  // Dark un-filled track
             )
         )
