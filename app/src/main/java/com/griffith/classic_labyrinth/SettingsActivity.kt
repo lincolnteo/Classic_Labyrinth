@@ -211,3 +211,7 @@ fun SettingRow(
         )
     }
 }
+object CalibrationManager {
+    var offsetX = 0f
+    var offsetY = 0f
+}
