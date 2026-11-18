@@ -20,12 +20,32 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
+import android.widget.Toast
 
-class SettingsActivity : ComponentActivity() {
+class SettingsActivity : ComponentActivity(), SensorEventListener {
+    private lateinit var sensorManager: SensorManager
+    private var accelerometer: Sensor? = null
+    private var currentTiltX = 0f
+    private var currentTiltY = 0f
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+
         setContent {
-            SettingsScreen()
+            SettingsScreen(
+                onCalibrate = {
+                    CalibrationManager.offsetX = currentTiltX
+                    CalibrationManager.offsetY = currentTiltY
+                    Toast.makeText(this, "Calibrated Successfully!", Toast.LENGTH_SHORT).show()// prompt user calibration is done
+                }
+            )
             enableEdgeToEdge()
         }
     }
@@ -33,19 +53,29 @@ class SettingsActivity : ComponentActivity() {
         super.onResume()
         SoundManager.isSwitchingScreens = false
         SoundManager.resumeMusic()
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 
     override fun onPause() {
         super.onPause()
+        sensorManager.unregisterListener(this)
         if (!SoundManager.isSwitchingScreens) {
             SoundManager.pauseMusic()
         }
     }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event == null) return
+        currentTiltX = event.values[1]
+        currentTiltY = event.values[0]
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 }
 
 @Preview
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(onCalibrate: () -> Unit = {}) {
 
     // Get context and cast to Activity so we can use activity?.finish() to close the screen
     val context = LocalContext.current
@@ -140,7 +170,7 @@ fun SettingsScreen() {
                     .height(60.dp)
                     .clickable {
                         SoundManager.playClick()
-                        // Calibrate
+                        onCalibrate()
                     }
             )
         }

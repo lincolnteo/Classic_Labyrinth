@@ -133,8 +133,8 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         // In landscape mode the phone physical axes are rotated 90 degrees relative to the screen.
         // The phone Y-axis (values[1]) becomes the screen Left/Right.
         // The phone X-axis (values[0]) becomes the screen Up/Down.
-        val tiltLeftRight = event.values[1]
-        val tiltUpDown = event.values[0]
+        val tiltLeftRight = event.values[1] - CalibrationManager.offsetX
+        val tiltUpDown = event.values[0] - CalibrationManager.offsetY
 
         // Adjust speed based on the tilt.
         // Tilting Right positive Y should increase speedX (move right)
