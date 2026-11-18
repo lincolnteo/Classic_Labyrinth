@@ -69,7 +69,7 @@ fun EndGameScreen() {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.button_exittext),
-                contentDescription = "Shop",
+                contentDescription = "Exit",
                 modifier = Modifier
                     .size(100.dp)
                     .align(alignment = Alignment.Bottom)
@@ -81,7 +81,7 @@ fun EndGameScreen() {
 
             Image(
                 painter = painterResource(id = R.drawable.button_calibrate),
-                contentDescription = "Shop",
+                contentDescription = "Calibrate",
                 modifier = Modifier
                     .size(100.dp)
                     .clickable {
