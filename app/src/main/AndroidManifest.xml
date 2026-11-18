@@ -44,6 +44,11 @@
             android:exported="false"
             android:screenOrientation="landscape"
             tools:ignore="LockedOrientationActivity,DiscouragedApi" />
+        <activity
+            android:name=".EndGameActivity"
+            android:exported="false"
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity,DiscouragedApi" />
     </application>
 
 </manifest>

@@ -137,6 +137,20 @@ fun MainMenuScreen() {
                         )
                     }
                 }
+                // temnporary button to access EndGameAct
+                Image(
+                    painter = painterResource(id = R.drawable.button_tokenlogo),
+                    contentDescription = "End Game",
+                    modifier = Modifier
+                        .padding(end = 5.dp)
+                        .size(60.dp)
+                        .clickable {
+                            SoundManager.playClick()
+                            SoundManager.isSwitchingScreens = true
+                            val intent = Intent(context, EndGameActivity::class.java)
+                            context.startActivity(intent)
+                        }
+                )
 
                 // Settings button: Opens SettingsActivity
                 Image(
