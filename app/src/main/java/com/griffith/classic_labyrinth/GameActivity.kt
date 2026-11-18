@@ -28,6 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.offset
+import androidx.compose.ui.platform.LocalDensity
 import androidx.activity.enableEdgeToEdge
 
 class GameActivity : ComponentActivity(), SensorEventListener {
@@ -70,7 +72,9 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                     contentScale = ContentScale.Crop
                 )
 
-                // Playzone Canvas (draws behind the button)
+                val density = LocalDensity.current
+                val equippedSkin = EquippedManager.equippedItem
+                // Play Zone canvas
                 Canvas(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -78,9 +82,27 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                     screenWidth = size.width
                     screenHeight = size.height
 
-                    drawCircle(
-                        color = Color.Black, radius = radius, center = Offset(ballX, ballY)
-                    )
+                    if (equippedSkin == null) {
+                        drawCircle(
+                            color = Color.Black, radius = radius, center = Offset(ballX, ballY)
+                        )
+                    }
+                }
+
+                if (equippedSkin != null) {
+                    with(density) {
+                        val sizeDp = (radius * 2).toDp()
+                        val xDp = (ballX - radius).toDp()
+                        val yDp = (ballY - radius).toDp()
+                        Image(
+                            painter = painterResource(id = equippedSkin.imageRes),
+                            contentDescription = "Ball Skin",
+                            modifier = Modifier
+                                .size(sizeDp)
+                                .offset(x = xDp, y = yDp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
 
                 // Top right exit button overlapping the canvas

@@ -259,6 +259,7 @@ fun ShopScreen() {
                         // Temporary logic: Items with ID 1, 2, 3 are unlocked. Rest are locked.
                         val isUnlocked = item.id in 1..3
                         val Alpha = if (isUnlocked) 1.0f else 0.5f
+                        val isEquipped = EquippedManager.equippedItem == item
 
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -266,6 +267,7 @@ fun ShopScreen() {
                                 if (isUnlocked) {
                                     SoundManager.playClick()
                                     selectedItem = item
+                                    EquippedManager.equippedItem = if (EquippedManager.equippedItem == item) null else item
                                 }
                             }
                         ) {
@@ -290,6 +292,15 @@ fun ShopScreen() {
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Yellow.copy(alpha = Alpha)
                             )
+                            if (isEquipped) {
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = "EQUIPPED",
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Green
+                                )
+                            }
                         }
                     }
                 }
@@ -310,4 +321,7 @@ fun ShopScreen() {
             }
         }
     }
+}
+object EquippedManager {
+    var equippedItem: ShopItem? = null
 }
