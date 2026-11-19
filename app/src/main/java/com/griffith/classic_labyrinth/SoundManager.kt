@@ -1,11 +1,14 @@
+// Lincoln Teo Ming Kern 3122215
+// GitHub repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.SoundPool
+
 // Using object instead of class creates a Singleton
-// so music keeps playing smoothly as you switch activites
+// so music keeps playing smoothly as you switch activities
 object SoundManager {
     // Media player for long running background music
     private var bgPlayer: MediaPlayer? = null

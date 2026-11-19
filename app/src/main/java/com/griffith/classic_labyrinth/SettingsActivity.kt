@@ -1,5 +1,5 @@
-// Lincoln Teo Ming Kern - 3122215
-// github repo: https://github.com/lincolnteo/Classic_Labyrinth
+// Lincoln Teo Ming Kern 3122215
+// GitHub repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import android.app.Activity
@@ -34,21 +34,24 @@ class SettingsActivity : ComponentActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+        // Get data from phone accelerometer
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
 
         setContent {
             SettingsScreen(
                 onCalibrate = {
+                    // save the current phone tilt angles as new flat tilt
                     CalibrationManager.offsetX = currentTiltX
                     CalibrationManager.offsetY = currentTiltY
-                    Toast.makeText(this, "Calibrated Successfully!", Toast.LENGTH_SHORT).show()// prompt user calibration is done
-                }
-            )
+                    Toast.makeText(this, "Calibrated Successfully!", Toast.LENGTH_SHORT)
+                        .show()// prompt user calibration is done
+                })
             enableEdgeToEdge()
         }
     }
+
+    // resume music when app is maximized
     override fun onResume() {
         super.onResume()
         SoundManager.isSwitchingScreens = false
@@ -56,6 +59,7 @@ class SettingsActivity : ComponentActivity(), SensorEventListener {
         sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI)
     }
 
+    // pause music when app is minimize, but keep playing if switching between activities
     override fun onPause() {
         super.onPause()
         sensorManager.unregisterListener(this)
@@ -63,18 +67,19 @@ class SettingsActivity : ComponentActivity(), SensorEventListener {
             SoundManager.pauseMusic()
         }
     }
-
+    // Update current tilt when the phone is moved
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
         currentTiltX = event.values[1]
         currentTiltY = event.values[0]
     }
-
+    // not used, required if using Sensor event listener
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 }
 
 @Preview
 @Composable
+// callback
 fun SettingsScreen(onCalibrate: () -> Unit = {}) {
 
     // Get context and cast to Activity so we can use activity?.finish() to close the screen
@@ -89,8 +94,7 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
 
     // root container
     Box(
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         // Background Image
         Image(
@@ -113,69 +117,68 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .size(50.dp)
-                    .clickable { 
-                        SoundManager.playClick()
-                        SoundManager.isSwitchingScreens = true
-                        activity?.finish() 
-                    }
-            )
-
-        // 4 Setting Sliders
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .align(Alignment.TopStart)
-                .padding(top = 50.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            SettingRow(
-                imageResId = R.drawable.settings_mastervolume,
-                value = masterVolume,
-                onValueChange = { 
-                    masterVolume = it 
-                    SoundManager.masterVolume = it
-                    SoundManager.updateVolumes()
-                })
-            SettingRow(
-                imageResId = R.drawable.settings_musicvolume,
-                value = musicVolume,
-                onValueChange = { 
-                    musicVolume = it 
-                    SoundManager.musicVolume = it
-                    SoundManager.updateVolumes()
-                })
-            SettingRow(
-                imageResId = R.drawable.settings_fxvolume, 
-                value = fxVolume, 
-                onValueChange = { 
-                    fxVolume = it 
-                    SoundManager.fxVolume = it
-                })
-            SettingRow(
-                imageResId = R.drawable.settings_sensitivity, 
-                value = sensitivity, 
-                onValueChange = { sensitivity = it })
-        }
-
-        // Calibrate Accelerometer Button
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 5.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.button_calibrate),
-                contentDescription = "Calibrate Accelerometer",
-                modifier = Modifier
-                    .height(60.dp)
                     .clickable {
                         SoundManager.playClick()
-                        onCalibrate()
-                    }
-            )
+                        SoundManager.isSwitchingScreens = true
+                        activity?.finish()
+                    })
+
+            // 4 Setting Sliders
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .align(Alignment.TopStart)
+                    .padding(top = 50.dp), verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                // master volume slider
+                SettingRow(
+                    imageResId = R.drawable.settings_mastervolume,
+                    value = masterVolume,
+                    onValueChange = {
+                        masterVolume = it
+                        SoundManager.masterVolume = it
+                        SoundManager.updateVolumes()
+                    })
+                // music volume slider
+                SettingRow(
+                    imageResId = R.drawable.settings_musicvolume,
+                    value = musicVolume,
+                    onValueChange = {
+                        musicVolume = it
+                        SoundManager.musicVolume = it
+                        SoundManager.updateVolumes()
+                    })
+                // fx volume slider
+                SettingRow(
+                    imageResId = R.drawable.settings_fxvolume, value = fxVolume, onValueChange = {
+                        fxVolume = it
+                        SoundManager.fxVolume = it
+                    })
+                // sensitivity slider
+                SettingRow(
+                    imageResId = R.drawable.settings_sensitivity,
+                    value = sensitivity,
+                    onValueChange = { sensitivity = it })
+            }
+
+            // Calibrate Accelerometer Button
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 5.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.button_calibrate),
+                    contentDescription = "Calibrate Accelerometer",
+                    modifier = Modifier
+                        .height(60.dp)
+                        .clickable {
+                            SoundManager.playClick()
+                            onCalibrate()
+                        })
+            }
         }
     }
-}
 }
 
 @Composable
@@ -211,7 +214,9 @@ fun SettingRow(
         )
     }
 }
+
+// Singleton that holds the calibrated tilt angle
 object CalibrationManager {
-    var offsetX = 0f
-    var offsetY = 0f
+    var offsetX = 0f // horizontal
+    var offsetY = 0f // verticle
 }

@@ -88,12 +88,16 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                         )
                     }
                 }
-
+                // if no skin is equipped used the same ball
                 if (equippedSkin != null) {
+                    // access density scope to convert coordinates to Dp to compose images
                     with(density) {
-                        val sizeDp = (radius * 2).toDp()
+                        val sizeDp = (radius * 2).toDp() // ball diameter in Dp
+                        // x and y pos in Dp
                         val xDp = (ballX - radius).toDp()
                         val yDp = (ballY - radius).toDp()
+
+                        // draw skins to the current ball position
                         Image(
                             painter = painterResource(id = equippedSkin.imageRes),
                             contentDescription = "Ball Skin",
@@ -131,14 +135,12 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                         onExit ={ // go to main menu AKA exit explicit
                             SoundManager.isSwitchingScreens = true
                             val intent = Intent(this@GameActivity, LevelsActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
                             finish()
                         },
                         onMainMenu = { // go to main menu AKA exit explicit
                             SoundManager.isSwitchingScreens = true
                             val intent = Intent(this@GameActivity, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
                             finish()
                         }

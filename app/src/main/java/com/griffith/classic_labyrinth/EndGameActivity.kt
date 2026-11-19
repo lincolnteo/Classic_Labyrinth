@@ -1,3 +1,5 @@
+// Lincoln Teo Ming Kern 3122215
+// GitHub repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import android.os.Bundle
@@ -35,7 +37,6 @@ class EndGameActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         SoundManager.init(this.applicationContext)
         SoundManager.resumeMusic()
-
         setContent {
             EndGameScreen()
             enableEdgeToEdge()
@@ -103,6 +104,7 @@ fun EndGameScreen() {
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.Bottom
         ) {
+            // exit button
             Image(
                 painter = painterResource(id = R.drawable.button_exittext),
                 contentDescription = "Exit",
@@ -115,7 +117,7 @@ fun EndGameScreen() {
                         val intent = Intent(context, MainActivity::class.java)
                         context.startActivity(intent)
                     })
-
+            // play again button
             Image(
                 painter = painterResource(id = R.drawable.button_playagain),
                 contentDescription = "Calibrate",

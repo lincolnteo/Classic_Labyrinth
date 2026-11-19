@@ -1,3 +1,5 @@
+// Lincoln Teo Ming Kern 3122215
+// GitHub repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import androidx.compose.foundation.Image
@@ -15,6 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
+// invoke Callback
 fun InGameMenuOverlay(
     onResume: () -> Unit, onSettings: () -> Unit, onMainMenu: () -> Unit, onExit: () -> Unit
 ) {
@@ -32,7 +35,7 @@ fun InGameMenuOverlay(
             contentAlignment = Alignment.Center
         ) {
             // placeholder
-            // overlay backgrounf of the ingame setting
+            // overlay background of the in game setting
             Image(
                 painter = painterResource(id = R.drawable.placeholder_place),
                 contentDescription = "Menu Background",

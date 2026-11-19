@@ -1,5 +1,5 @@
 // Lincoln Teo Ming Kern - 3122215
-// github repo: https://github.com/lincolnteo/Classic_Labyrinth
+// GitHub repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import android.content.Intent
@@ -38,19 +38,21 @@ class MainActivity : ComponentActivity() {
         // Initialize sound manager
         SoundManager.init(this.applicationContext)
         SoundManager.resumeMusic()
-        
+
         setContent {
             MainMenuScreen()
             enableEdgeToEdge()
         }
     }
 
+    // resume music when app is maximized
     override fun onResume() {
         super.onResume()
         SoundManager.isSwitchingScreens = false
         SoundManager.resumeMusic()
     }
 
+    // pause music when app is minimize, but keep playing if switching between activities
     override fun onPause() {
         super.onPause()
         if (!SoundManager.isSwitchingScreens) {
@@ -100,9 +102,11 @@ fun MainMenuScreen() {
                         painter = painterResource(id = R.drawable.coinbar),
                         contentDescription = "Coin Bar",
                         contentScale = ContentScale.FillBounds,
-                        modifier = Modifier.size(width = 320.dp, height = 50.dp) // Widen the coin bar
+                        modifier = Modifier.size(
+                            width = 320.dp, height = 50.dp
+                        ) // Widen the coin bar
                     )
-                    
+
                     // Align the text into the three wooden slots
                     Row(
                         modifier = Modifier.fillMaxWidth(0.35f), // Scale to fit the image bounds
@@ -111,13 +115,13 @@ fun MainMenuScreen() {
                     ) {
                         // Level slot
                         Text(
-                            text = "XX", 
+                            text = "XX",
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             modifier = Modifier.padding(start = 50.dp)
                         )
-                        
+
                         // XP slot
                         Text(
                             text = "XXX/100",
@@ -126,7 +130,7 @@ fun MainMenuScreen() {
                             fontSize = 10.sp,
                             modifier = Modifier.padding(start = 65.dp)
                         )
-                        
+
                         // Coins slot
                         Text(
                             text = "XXXXX",
@@ -149,8 +153,7 @@ fun MainMenuScreen() {
                             SoundManager.isSwitchingScreens = true
                             val intent = Intent(context, EndGameActivity::class.java)
                             context.startActivity(intent)
-                        }
-                )
+                        })
 
                 // Settings button: Opens SettingsActivity
                 Image(

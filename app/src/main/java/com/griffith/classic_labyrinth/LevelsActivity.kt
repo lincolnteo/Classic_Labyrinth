@@ -1,5 +1,5 @@
 // Lincoln Teo Ming Kern - 3122215
-// github repo: https://github.com/lincolnteo/Classic_Labyrinth
+// GitHub repo: https://github.com/lincolnteo/Classic_Labyrinth
 package com.griffith.classic_labyrinth
 
 import android.app.Activity
@@ -37,12 +37,13 @@ class LevelsActivity : ComponentActivity() {
             enableEdgeToEdge()
         }
     }
+    // resume music when app is maximized
     override fun onResume() {
         super.onResume()
         SoundManager.isSwitchingScreens = false
         SoundManager.resumeMusic()
     }
-
+    // pause music when app is minimize, but keep playing if switching between activities
     override fun onPause() {
         super.onPause()
         if (!SoundManager.isSwitchingScreens) {
@@ -54,6 +55,7 @@ class LevelsActivity : ComponentActivity() {
 @Preview(showSystemUi = true)
 @Composable
 fun LevelsScreen() {
+    // Get context and cast to Activity so we can use activity?.finish() to close the screen
     val context = LocalContext.current
     val activity = context as? Activity
 
@@ -69,6 +71,8 @@ fun LevelsScreen() {
                 2, 3 -> "unlocked"
                 else -> "locked"
             }
+            // group 3 related data into a single object
+            // each level is stored at triple (level state and title)
             Triple(levelNum, state, "Level $levelNum")
         }
     }
