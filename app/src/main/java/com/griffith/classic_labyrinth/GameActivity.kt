@@ -166,10 +166,9 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         speedX = speedX + tiltLeftRight
         speedY = speedY + tiltUpDown
 
-        // Slow the ball down by half
-        // the sensitivity slider would change the number of this
-        speedX = speedX * 0.7f
-        speedY = speedY * 0.7f
+        // Adjust speed based on sensitivity setting
+        speedX = speedX * CalibrationManager.sensitivity
+        speedY = speedY * CalibrationManager.sensitivity
 
         // Move the ball
         ballX = ballX + speedX
@@ -207,6 +206,10 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         SoundManager.isSwitchingScreens = false
         SoundManager.resumeMusic()
         sensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_GAME)
+
+        // Load tilt sensitivity from player_setting.csv
+        val settings = csvManager.loadPlayerSettings(this)
+        CalibrationManager.sensitivity = settings["tilt_sensitivity"]?.toFloatOrNull() ?: 0.7f
     }
 
     override fun onPause() {

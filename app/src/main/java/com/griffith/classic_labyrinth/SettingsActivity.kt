@@ -86,11 +86,16 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
     val context = LocalContext.current
     val activity = context as? Activity
 
-    // Slider default position
-    var masterVolume by remember { mutableFloatStateOf(1f) }
-    var musicVolume by remember { mutableFloatStateOf(0.5f) }
-    var fxVolume by remember { mutableFloatStateOf(0.5f) }
-    var sensitivity by remember { mutableFloatStateOf(0.5f) }
+
+    // Slider positions loaded from player_setting.csv
+    var masterVolume by remember { mutableFloatStateOf(SoundManager.masterVolume) }
+    var musicVolume by remember { mutableFloatStateOf(SoundManager.musicVolume) }
+    var fxVolume by remember { mutableFloatStateOf(SoundManager.fxVolume) }
+
+    // Load tilt sensitivity from player_setting.csv
+    val playerSettings = remember { csvManager.loadPlayerSettings(context) }
+    // if sensitivity is not set the default will be 0.5
+    var sensitivity by remember { mutableFloatStateOf(playerSettings["tilt_sensitivity"]?.toFloatOrNull() ?: 0.5f) }
 
     // root container
     Box(
@@ -138,6 +143,8 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
                         masterVolume = it
                         SoundManager.masterVolume = it
                         SoundManager.updateVolumes()
+                        // save new music volume to player_settings.csv
+                        csvManager.savePlayerSetting(context, "master_vol", it.toString())
                     })
                 // music volume slider
                 SettingRow(
@@ -147,18 +154,29 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
                         musicVolume = it
                         SoundManager.musicVolume = it
                         SoundManager.updateVolumes()
+                        // save new music volume to player_settings.csv
+                        csvManager.savePlayerSetting(context, "music_vol", it.toString())
                     })
                 // fx volume slider
                 SettingRow(
-                    imageResId = R.drawable.settings_fxvolume, value = fxVolume, onValueChange = {
+                    imageResId = R.drawable.settings_fxvolume,
+                    value = fxVolume,
+                    onValueChange = {
                         fxVolume = it
                         SoundManager.fxVolume = it
+                        // save new music volume to player_settings.csv
+                        csvManager.savePlayerSetting(context, "fx_vol", it.toString())
                     })
-                // sensitivity slider
+                // sensitivity slider range 0 to 1
                 SettingRow(
                     imageResId = R.drawable.settings_sensitivity,
                     value = sensitivity,
-                    onValueChange = { sensitivity = it })
+                    onValueChange = {
+                        sensitivity = it
+                        CalibrationManager.sensitivity = it
+                        // save new sensitivity to player_setting.csv
+                        csvManager.savePlayerSetting(context, "tilt_sensitivity", it.toString())
+                    })
             }
 
             // Calibrate Accelerometer Button
@@ -215,8 +233,9 @@ fun SettingRow(
     }
 }
 
-// Singleton that holds the calibrated tilt angle
+// Singleton that holds the calibrated tilt angle and velocity sensitivity
 object CalibrationManager {
     var offsetX = 0f // horizontal
     var offsetY = 0f // vertical
+    var sensitivity = 0.7f // ball velocity
 }

@@ -26,6 +26,13 @@ object SoundManager {
     var isSwitchingScreens = false
 
     fun init(context: Context) {
+        // Load volume settings from player_setting.csv via csvManager
+        val settings = csvManager.loadPlayerSettings(context)
+        // get volume from csv else default value
+        masterVolume = settings["master_vol"]?.toFloatOrNull() ?: 1.0f
+        musicVolume = settings["music_vol"]?.toFloatOrNull() ?: 0.5f
+        fxVolume = settings["fx_vol"]?.toFloatOrNull() ?: 0.5f
+
         // Setup SoundPool for FX so it wont cut off the audio
         if (soundPool == null) {
             val audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)// identify audio as game sound
@@ -42,8 +49,11 @@ object SoundManager {
         if (bgPlayer == null) {
             bgPlayer = MediaPlayer.create(context, R.raw.background_music).apply {
                 isLooping = true // music loop
-                setVolume(masterVolume * musicVolume, masterVolume * musicVolume)
+                val vol = masterVolume * musicVolume
+                setVolume(vol, vol)
             }
+        } else {
+            updateVolumes() // if player exist updates the volume
         }
     }
 
