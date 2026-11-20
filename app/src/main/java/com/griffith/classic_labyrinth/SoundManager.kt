@@ -28,8 +28,8 @@ object SoundManager {
     fun init(context: Context) {
         // Setup SoundPool for FX so it wont cut off the audio
         if (soundPool == null) {
-            val audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+            val audioAttributes = AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)// identify audio as game sound
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()// marks it as short UI feedback
 
             soundPool = SoundPool.Builder().setMaxStreams(5) // Max simultaneous sounds
                 .setAudioAttributes(audioAttributes).build()

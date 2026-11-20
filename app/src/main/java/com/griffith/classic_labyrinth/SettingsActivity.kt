@@ -218,5 +218,5 @@ fun SettingRow(
 // Singleton that holds the calibrated tilt angle
 object CalibrationManager {
     var offsetX = 0f // horizontal
-    var offsetY = 0f // verticle
+    var offsetY = 0f // vertical
 }

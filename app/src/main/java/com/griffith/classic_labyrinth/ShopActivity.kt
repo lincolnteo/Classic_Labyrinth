@@ -48,7 +48,7 @@ class ShopActivity : ComponentActivity() {
         SoundManager.resumeMusic()
     }
 
-    // pause music when app is minimize, but keep playing if switching between activities
+    // pause music when app is minimized, but keep playing if switching between activities
     override fun onPause() {
         super.onPause()
         if (!SoundManager.isSwitchingScreens) {
@@ -142,6 +142,20 @@ fun ShopScreen() {
                 selectedCategory = firstVisibleItem.category
             }
         }
+    }
+
+    // Load bought skin IDs directly from shop.csv
+    val boughtIds = remember {
+        val ids = mutableListOf<Int>()
+        val lines = context.assets.open("shop.csv").bufferedReader().readLines()
+        for (line in lines) {
+            val parts = line.split(",")
+            if (parts.size >= 2 && parts[1].trim() == "true") {
+                val id = parts[0].trim().toIntOrNull()
+                if (id != null) ids.add(id)
+            }
+        }
+        ids
     }
 
     // Main container
@@ -241,7 +255,7 @@ fun ShopScreen() {
                             .clickable {
                                 SoundManager.playClick()
                                 selectedCategory = category
-                                targetScrollIndex =
+                                targetScrollIndex = // scans the list of ShopItem then finds the very first category that match what the user clicks
                                     allShopItems.indexOfFirst { it.category == category }
                             }, // update status when clicked
                         contentScale = ContentScale.Fit,
@@ -273,9 +287,9 @@ fun ShopScreen() {
                     items(allShopItems) { item ->
                         // check if this items is currently selected by the user
                         val isSelectedItem = selectedItem == item
-                        // Temporary logic: Items with ID 1, 2, 3 are unlocked. Rest are locked.
-                        val isUnlocked = item.id in 1..3
-                        val Alpha =
+                        // Checks if skin ID is in the bought list
+                        val isUnlocked = item.id in boughtIds
+                        val alpha =
                             if (isUnlocked) 1.0f else 0.5f// if item is locked alpha will be 0.5 while unlocked would be 1
                         val isEquipped =
                             EquippedManager.equippedItem == item // Checks if this skin is the one currently equipped
@@ -299,7 +313,7 @@ fun ShopScreen() {
                                 contentDescription = item.idName,
                                 modifier = Modifier.size(100.dp),
                                 contentScale = ContentScale.Fit,
-                                alpha = if (isSelectedItem) blinkAlpha else Alpha
+                                alpha = if (isSelectedItem) blinkAlpha else alpha
                             )
                             // the skin name
                             Spacer(modifier = Modifier.height(4.dp))
@@ -307,7 +321,7 @@ fun ShopScreen() {
                                 text = item.idName,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White.copy(alpha = Alpha)
+                                color = Color.White.copy(alpha = alpha)
                             )
                             // The cost
                             Spacer(modifier = Modifier.height(4.dp))
@@ -315,7 +329,7 @@ fun ShopScreen() {
                                 text = "${item.price} Coins",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.Yellow.copy(alpha = Alpha)
+                                color = Color.Yellow.copy(alpha = alpha)
                             )
                             // Equip Status
                             if (isEquipped) {
