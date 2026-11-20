@@ -131,7 +131,7 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
             // 4 Setting Sliders
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
+                    .fillMaxWidth(0.8f)
                     .align(Alignment.TopStart)
                     .padding(top = 50.dp), verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {

@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +36,11 @@ import androidx.activity.enableEdgeToEdge
 
 // Main Activity, entry point of the app
 class MainActivity : ComponentActivity() {
+    // State variables for player stats (Level, XP, Coins)
+    private var levelText by mutableStateOf("1")
+    private var xpText by mutableStateOf("0/100")
+    private var coinsText by mutableStateOf("0")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Initialize sound manager
@@ -41,16 +48,22 @@ class MainActivity : ComponentActivity() {
         SoundManager.resumeMusic()
 
         setContent {
-            MainMenuScreen()
+            MainMenuScreen(levelText, xpText, coinsText)
             enableEdgeToEdge()
         }
     }
-
     // resume music when app is maximized
+    // reload player stats from player_setting.csv when screen resumes
     override fun onResume() {
         super.onResume()
         SoundManager.isSwitchingScreens = false
         SoundManager.resumeMusic()
+
+        // Load latest stats from player_setting.csv via csvManager
+        val settings = csvManager.loadPlayerSettings(this)
+        levelText = settings["level"] ?: "1"
+        xpText = "${settings["current_xp"] ?: "0"}/100"
+        coinsText = settings["coins"] ?: "0"
     }
 
     // pause music when app is minimized, but keep playing if switching between activities
@@ -65,15 +78,13 @@ class MainActivity : ComponentActivity() {
 // Main menu UIs
 @Preview(showSystemUi = true)
 @Composable
-fun MainMenuScreen() {
+fun MainMenuScreen(
+    levelText: String = "1",
+    xpText: String = "0/100",
+    coinsText: String = "0"
+) {
     // Context for launching intents
     val context = LocalContext.current
-
-    // Load player settings from player_setting.csv via csvManager
-    val playerSettings = remember { csvManager.loadPlayerSettings(context) }
-    val levelText = playerSettings["level"] ?: "1"// default is 1 if null
-    val xpText = "${playerSettings["current_xp"] ?: "0"}/100" // default is 0 if null
-    val coinsText = playerSettings["coins"] ?: "0" // default is 0 if null
 
     // Root container for the main menu screen
     Box(
