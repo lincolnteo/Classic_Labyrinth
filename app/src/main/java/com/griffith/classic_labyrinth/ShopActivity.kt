@@ -4,6 +4,7 @@ package com.griffith.classic_labyrinth
 
 import android.app.Activity
 import android.os.Bundle
+import java.io.File
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -101,6 +102,21 @@ val allShopItems = listOf(
     ShopItem(32, "Rusty Iron", 100, R.drawable.shop_metals_rustyiron, "Metals")
 )
 
+//get and create the writable shop.csv file in internal storage
+fun getShopCsvFile(context: android.content.Context): File {
+    val file = File(context.filesDir, "shop.csv")
+    // checks if user have the file
+    if (!file.exists()) {
+        // save shop.csv from assets into internal storage so we can write to it
+        context.assets.open("shop.csv").use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+    }
+    return file
+}
+
 @Preview
 @Composable
 fun ShopScreen() {
@@ -144,14 +160,15 @@ fun ShopScreen() {
         }
     }
 
-    // Load bought skin IDs directly from shop.csv
+    // Load bought skin IDs from writable shop.csv
     val boughtIds = remember {
-        val ids = mutableListOf<Int>()
-        val lines = context.assets.open("shop.csv").bufferedReader().readLines()
-        for (line in lines) {
-            val parts = line.split(",")
-            if (parts.size >= 2 && parts[1].trim() == "true") {
-                val id = parts[0].trim().toIntOrNull()
+        val ids = mutableStateListOf<Int>()
+        val file = getShopCsvFile(context)
+        for (line in file.readLines()) {
+            val parts = line.split(",") // acts as the divider
+            // get index 1 which is the second value
+            if (parts.size >= 2 && parts[1] == "true") {
+                val id = parts[0].toIntOrNull()
                 if (id != null) ids.add(id)
             }
         }
@@ -255,7 +272,8 @@ fun ShopScreen() {
                             .clickable {
                                 SoundManager.playClick()
                                 selectedCategory = category
-                                targetScrollIndex = // scans the list of ShopItem then finds the very first category that match what the user clicks
+                                targetScrollIndex =
+                                        // scans the list of ShopItem then finds the very first category that match what the user clicks
                                     allShopItems.indexOfFirst { it.category == category }
                             }, // update status when clicked
                         contentScale = ContentScale.Fit,
@@ -297,12 +315,10 @@ fun ShopScreen() {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.clickable {
-                                // equippin fucntion
+                                SoundManager.playClick()
+                                selectedItem = item // Select item when clicked
+                                // Equip function (only if item is unlocked/bought)
                                 if (isUnlocked) {
-                                    SoundManager.playClick()
-                                    selectedItem = item
-                                    // if item is already equip then remove it, set to null
-                                    // else equip the item clicked
                                     EquippedManager.equippedItem =
                                         if (EquippedManager.equippedItem == item) null else item
                                 }
@@ -351,18 +367,41 @@ fun ShopScreen() {
                     .align(Alignment.BottomEnd)
                     .padding(bottom = 4.dp)
             ) {
-                // function is not implemented yet
                 Image(
                     painter = painterResource(id = R.drawable.button_purchase),
                     contentDescription = "Purchase",
                     modifier = Modifier
                         .height(50.dp)
                         .width(160.dp)
-                        .clickable { SoundManager.playClick() })
+                        .clickable {
+                            SoundManager.playClick()
+                            val item = selectedItem
+                            // Only purchase if an item is selected and not already bought
+                            if (item != null && item.id !in boughtIds) {
+                                // Read lines from writable shop.csv
+                                val file = getShopCsvFile(context)
+                                val lines = file.readLines()
+                                // Update the line for this item ID from false to true
+                                val updatedLines = lines.map { line ->
+                                    val parts = line.split(",")// splits it into an array
+                                    // get index 0 whcih is th first value
+                                    if (parts.size >= 2 && parts[0] == item.id.toString()) {
+                                        "${item.id},true"// change the boolean if it matches the id
+                                    } else {
+                                        line
+                                    }
+                                }
+                                // Save the updated lines back to shop.csv
+                                file.writeText(updatedLines.joinToString("\n"))
+                                // Add to boughtIds list so it unlocks the skin
+                                boughtIds.add(item.id)
+                            }
+                        })
             }
         }
     }
 }
+
 // Equipment manager used to track if an item is equipped or not
 object EquippedManager {
     var equippedItem: ShopItem? = null
