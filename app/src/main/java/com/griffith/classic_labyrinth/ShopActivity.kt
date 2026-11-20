@@ -4,7 +4,6 @@ package com.griffith.classic_labyrinth
 
 import android.app.Activity
 import android.os.Bundle
-import java.io.File
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -102,21 +101,6 @@ val allShopItems = listOf(
     ShopItem(32, "Rusty Iron", R.drawable.shop_metals_rustyiron, "Metals")
 )
 
-//get and create the writable shop.csv file in internal storage
-fun getShopCsvFile(context: android.content.Context): File {
-    val file = File(context.filesDir, "shop.csv")
-    // checks if user have the file
-    if (!file.exists()) {
-        // save shop.csv from assets into internal storage so we can write to it
-        context.assets.open("shop.csv").use { input ->
-            file.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
-    }
-    return file
-}
-
 @Preview
 @Composable
 fun ShopScreen() {
@@ -160,37 +144,20 @@ fun ShopScreen() {
         }
     }
 
-    // Load bought skin IDs from writable shop.csv
-    val boughtIds = remember {
-        val ids = mutableStateListOf<Int>()
-        val file = getShopCsvFile(context)
-        for (line in file.readLines()) {
-            val parts = line.split(",") // acts as the divider
-            // get index 1 which is the second value
-            if (parts.size >= 3 && parts[1] == "true") {
-                val id = parts[0].toIntOrNull()
-                if (id != null) ids.add(id)
-            }
-        }
-        ids
-    }
-
-    // Load item prices from shop.csv
-    val itemPrices = remember {
-        val prices = mutableMapOf<Int, Int>()
-        val file = getShopCsvFile(context)
-        for (line in file.readLines()) {
-            val parts = line.split(",")
-            // index 0 is id, index 2 is price
-            if (parts.size >= 3 && parts[0] != "id") {
-                val id = parts[0].toInt()
-                val price = parts[2].toInt()
-                prices[id] = price
-
-            }
-        }
-        prices
-    }
+    // Load bought skin IDs, prices, and player settings thru csvManager
+    // get all skin IDs that are =true
+    val boughtIds =
+        remember { mutableStateListOf<Int>().apply { addAll(csvManager.loadBoughtSkinIds(context)) } }
+    // get all shop item prices from shop.csv
+    val itemPrices =
+        remember { csvManager.loadShopItemPrices(context) }
+    // get all data from player setting csv
+    val playerSettings =
+        remember { csvManager.loadPlayerSettings(context) }
+    // get coin count from player_setting.csv
+    // dedault at 0 if not found
+    var userCoins by
+    remember { mutableIntStateOf(playerSettings["coins"]?.toIntOrNull() ?: 0) }
 
     // Main container
     Box(modifier = Modifier.fillMaxSize()) {
@@ -226,7 +193,7 @@ fun ShopScreen() {
                     )
                     // text in the coin bar
                     Text(
-                        text = "XXXX",
+                        text = "$userCoins",
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp,
@@ -396,24 +363,18 @@ fun ShopScreen() {
                             val item = selectedItem
                             // Only purchase if an item is selected and not already bought
                             if (item != null && item.id !in boughtIds) {
-                                // Read lines from writable shop.csv
-                                val file = getShopCsvFile(context)
-                                val lines = file.readLines()
-                                // Update the line for this item ID from false to true while preserving price at index 2
-                                val updatedLines = lines.map { line ->
-                                    val parts = line.split(",") // splits it into an array
-                                    // get index 0 which is the first value
-                                    if (parts.size >= 3 && parts[0] == item.id.toString()) {
-                                        val priceStr = parts[2]
-                                        "${item.id},true,$priceStr" // change boolean to true, preserve price
-                                    } else {
-                                        line
-                                    }
-                                }
-                                // Save the updated lines back to shop.csv
-                                file.writeText(updatedLines.joinToString("\n"))
-                                // Add to boughtIds list so it unlocks the skin
+                                // Purchase item using csvManager
+                                csvManager.purchaseShopItem(context, item.id)
                                 boughtIds.add(item.id)
+
+                                // Deduct coins and update player_setting.csv via csvManager
+                                val itemPrice = itemPrices[item.id] ?: 0
+                                if (userCoins >= itemPrice) {
+                                    userCoins -= itemPrice
+                                    csvManager.savePlayerSetting(
+                                        context, "coins", userCoins.toString()
+                                    )
+                                }
                             }
                         })
             }

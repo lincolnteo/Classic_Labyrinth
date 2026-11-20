@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,7 +53,7 @@ class MainActivity : ComponentActivity() {
         SoundManager.resumeMusic()
     }
 
-    // pause music when app is minimize, but keep playing if switching between activities
+    // pause music when app is minimized, but keep playing if switching between activities
     override fun onPause() {
         super.onPause()
         if (!SoundManager.isSwitchingScreens) {
@@ -67,6 +68,12 @@ class MainActivity : ComponentActivity() {
 fun MainMenuScreen() {
     // Context for launching intents
     val context = LocalContext.current
+
+    // Load player settings from player_setting.csv via csvManager
+    val playerSettings = remember { csvManager.loadPlayerSettings(context) }
+    val levelText = playerSettings["level"] ?: "1"// default is 1 if null
+    val xpText = "${playerSettings["current_xp"] ?: "0"}/100" // default is 0 if null
+    val coinsText = playerSettings["coins"] ?: "0" // default is 0 if null
 
     // Root container for the main menu screen
     Box(
@@ -115,7 +122,7 @@ fun MainMenuScreen() {
                     ) {
                         // Level slot
                         Text(
-                            text = "XX",
+                            text = levelText,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
@@ -124,7 +131,7 @@ fun MainMenuScreen() {
 
                         // XP slot
                         Text(
-                            text = "XXX/100",
+                            text = xpText,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 10.sp,
@@ -133,7 +140,7 @@ fun MainMenuScreen() {
 
                         // Coins slot
                         Text(
-                            text = "XXXXX",
+                            text = coinsText,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 10.sp,
