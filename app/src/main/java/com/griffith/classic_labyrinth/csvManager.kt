@@ -173,4 +173,32 @@ object csvManager {
         }
         return map
     }
+
+    // Marks completedLevelNum as completed and unlocks completedLevelNum + 1 if locked
+    fun completeLevel(context: Context, completedLevelNum: Int) {
+        val file = getLevelProgressFile(context)
+        val updatedLines = file.readLines().map { line ->
+            val parts = line.split(",")
+
+            if (parts.size >= 2 && parts[0] != "LevelNum") {
+                val levelNum = parts[0].toIntOrNull()
+
+                if (levelNum == completedLevelNum) {
+                    // Change status at index 1 to completed
+                    val rest = parts.drop(2).joinToString(",")
+                    "$levelNum,completed" + (if (rest.isNotEmpty()) ",$rest" else "")
+                } else if (levelNum == completedLevelNum + 1 && parts[1] == "locked") {
+                    // Unlock next level if it is currently locked
+                    val rest = parts.drop(2).joinToString(",")
+                    "$levelNum,unlocked" + (if (rest.isNotEmpty()) ",$rest" else "")
+                } else {
+                    line
+                }
+
+            } else {
+                line
+            }
+        }
+        file.writeText(updatedLines.joinToString("\n"))
+    }
 }

@@ -1,8 +1,8 @@
 LevelNum, status,Rewards,XP, Personal Best,Objective,Trap
-1,unlocked,200,100,12.34,Victory Demo,0
-2,unlocked,250,110,0,Loss Demo,1
-3,unlocked,300,120,0,Example,1
-4,unlocked,350,130,0,nameOne,0
+1,unlocked,200,30,0,Victory Demo,0
+2,locked,250,110,0,Loss Demo,1
+3,locked,300,120,0,Example,1
+4,locked,350,130,0,nameOne,0
 5,locked,400,140,0,nameTwo,1
 6,locked,400,150,0,nameThree,2
 7,locked,400,160,0,nameFour,3

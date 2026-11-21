@@ -16,6 +16,7 @@ object SoundManager {
     // SoundPool for short, quick sound effects (like clicks or wall bumps)
     private var soundPool: SoundPool? = null
     private var clickSoundId: Int = 0
+    private var victorySoundId: Int = 0
 
     // Global volume controls  0.0f to 1.0f
     var masterVolume = 1.0f
@@ -41,8 +42,9 @@ object SoundManager {
             soundPool = SoundPool.Builder().setMaxStreams(5) // Max simultaneous sounds
                 .setAudioAttributes(audioAttributes).build()
 
-            // Load the button click sound into memory
+            // Load the button click and victory sounds into memory
             clickSoundId = soundPool?.load(context, R.raw.fx_button_click, 1) ?: 0
+            victorySoundId = soundPool?.load(context, R.raw.fx_victory, 1) ?: 0
         }
 
         // Setup MediaPlayer for Background Music
@@ -63,6 +65,11 @@ object SoundManager {
         soundPool?.play(clickSoundId, volume, volume, 1, 0, 1f)
     }
 
+    // Plays the victory sound effect
+    fun playVictory() {
+        val volume = masterVolume * fxVolume
+        soundPool?.play(victorySoundId, volume, volume, 1, 0, 1f)
+    }
     //Pauses the background music
 
     fun pauseMusic() {

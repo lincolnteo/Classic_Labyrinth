@@ -38,6 +38,12 @@ class GameActivity : ComponentActivity(), SensorEventListener {
     private lateinit var sensorManager: SensorManager
     private var mySensor: Sensor? = null
 
+    // Level state
+    private var currentLevelId = 1
+    private var hasWon = false
+    private var startTimeMillis = 0L
+    private var isPositionInitialized = false
+
     // Ball position and speed
     private var ballX by mutableFloatStateOf(300f)
     private var ballY by mutableFloatStateOf(500f)
@@ -47,13 +53,17 @@ class GameActivity : ComponentActivity(), SensorEventListener {
     // Screen size
     private var screenWidth = 0f
     private var screenHeight = 0f
-    private val radius = 100f
+    private val radius = 60f
 
     private var isGamePaused by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Get Level ID passed from LevelsActivity (defaults to 1)
+        currentLevelId = intent.getIntExtra("EXTRA_LEVEL_ID", 1)
+        startTimeMillis = System.currentTimeMillis()
 
         // Get data phone tilt sensor
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -78,9 +88,19 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                 Canvas(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    // Get screen width and height directly inside the Canvas
                     screenWidth = size.width
                     screenHeight = size.height
+
+                    // set start position on the first frame
+                    if (!isPositionInitialized && size.width > 0f) {
+                        isPositionInitialized = true
+                        val startZoneX = 220f
+                        val topWallY = screenHeight * 0.35f
+                        val bottomWallY = screenHeight * 0.65f
+                        ballX = startZoneX / 2f // position ball inside start zone
+                        ballY = (topWallY + bottomWallY) / 2f // center ball vertically
+                    }
+                    Level1.drawCanvas(this, screenWidth, screenHeight)
 
                     if (equippedSkin == null) {
                         drawCircle(
@@ -152,7 +172,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
 
     // Runs every time the phone tilts
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event == null || isGamePaused) return
+        if (event == null || isGamePaused || hasWon) return
 
         // In landscape mode the phone physical axes are rotated 90 degrees relative to the screen.
         // The phone Y-axis (values[1]) becomes the screen Left/Right.
@@ -196,6 +216,24 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         if (ballY + radius > screenHeight) {
             ballY = screenHeight - radius
             speedY = 0f
+        }
+        // Level-specific boundary limits and win condition checks
+        if (screenHeight > 0f) {
+            when (currentLevelId) {
+                1 -> Level1.updatePhysics(
+                    context = this,
+                    ballX = ballX,
+                    ballY = ballY,
+                    radius = radius,
+                    screenWidth = screenWidth,
+                    screenHeight = screenHeight,
+                    hasWon = hasWon,
+                    startTimeMillis = startTimeMillis,
+                    onUpdateY = { ballY = it },
+                    onStopY = { speedY = 0f },
+                    onWinState = { hasWon = true }
+                )
+            }
         }
     }
 
