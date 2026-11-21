@@ -174,29 +174,38 @@ object csvManager {
         return map
     }
 
-    // Marks completedLevelNum as completed and unlocks completedLevelNum + 1 if locked
-    fun completeLevel(context: Context, completedLevelNum: Int) {
+    // Marks completedLevelNum as completed, updates Personal Best if faster, and unlocks next level
+    fun completeLevel(context: Context, completedLevelNum: Int, elapsedTimeSec: Float = 0f) {
         val file = getLevelProgressFile(context)
         val updatedLines = file.readLines().map { line ->
             val parts = line.split(",")
 
-            if (parts.size >= 2 && parts[0] != "LevelNum") {
+            if (parts.size >= 7 && parts[0] != "LevelNum") {
                 val levelNum = parts[0].toIntOrNull()
 
                 if (levelNum == completedLevelNum) {
-                    // Change status at index 1 to completed
-                    val rest = parts.drop(2).joinToString(",")
-                    "$levelNum,completed" + (if (rest.isNotEmpty()) ",$rest" else "")
+                    // fetch data from csv then convert to float
+                    val oldPb = parts[4].toFloatOrNull() ?: 0f
+                    // check if new completion time is a personal best
+                    val isNewBest = elapsedTimeSec > 0f && (oldPb == 0f || elapsedTimeSec < oldPb)
+                    // update is PB is broken else remain the same
+                    val newPbStr = if (isNewBest) {
+                        String.format(java.util.Locale.ENGLISH, "%.2fs", elapsedTimeSec)
+                    } else {
+                        parts[4]
+                    }
+                    // change status is completed
+                    // LevelNum, status, Rewards, XP, Personal Best, Objective, Trap
+                    "$levelNum,completed,${parts[2]},${parts[3]},$newPbStr,${parts[5]},${parts[6]}"
                 } else if (levelNum == completedLevelNum + 1 && parts[1] == "locked") {
                     // Unlock next level if it is currently locked
-                    val rest = parts.drop(2).joinToString(",")
-                    "$levelNum,unlocked" + (if (rest.isNotEmpty()) ",$rest" else "")
+                    "$levelNum,unlocked,${parts[2]},${parts[3]},${parts[4]},${parts[5]},${parts[6]}"
                 } else {
-                    line
+                    line // no change
                 }
 
             } else {
-                line
+                line //no change
             }
         }
         file.writeText(updatedLines.joinToString("\n"))

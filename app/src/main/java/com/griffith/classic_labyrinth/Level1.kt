@@ -91,8 +91,8 @@ object Level1 {
         val elapsedTimeSec = (System.currentTimeMillis() - startTimeMillis) / 1000f
         val timeFormatted = String.format(java.util.Locale.ENGLISH, "%.2fs", elapsedTimeSec)
 
-        // Complete level 1 in level_progress.csv and unlock level 2
-        csvManager.completeLevel(context, LEVEL_ID)
+        // Complete level 1 in level_progress.csv, update Personal Best if faster, and unlock level 2
+        csvManager.completeLevel(context, LEVEL_ID, elapsedTimeSec)
 
         // Read level details and reward coins and XP
         val levelInfo = csvManager.loadAllLevelDetails(context)[LEVEL_ID]
