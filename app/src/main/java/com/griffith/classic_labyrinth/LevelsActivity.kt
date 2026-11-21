@@ -30,18 +30,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 
 class LevelsActivity : ComponentActivity() {
+    private var levelDetailsState by mutableStateOf<Map<Int, LevelDetails>>(emptyMap())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            LevelsScreen()
+            LevelsScreen(levelDetailsState)
             enableEdgeToEdge()
         }
     }
-    // resume music when app is maximized
+    // resume music when app is maximized and reload level progress from level_progress.csv
     override fun onResume() {
         super.onResume()
         SoundManager.isSwitchingScreens = false
         SoundManager.resumeMusic()
+        levelDetailsState = csvManager.loadAllLevelDetails(this)
     }
     // pause music when app is minimize, but keep playing if switching between activities
     override fun onPause() {
@@ -54,27 +57,24 @@ class LevelsActivity : ComponentActivity() {
 
 @Preview(showSystemUi = true)
 @Composable
-fun LevelsScreen() {
+fun LevelsScreen(levelDetailsMap: Map<Int, LevelDetails> = emptyMap()) {
     // Get context and cast to Activity so we can use activity?.finish() to close the screen
     val context = LocalContext.current
     val activity = context as? Activity
 
-    // Selected Level State
-    var selectedLevel by remember { mutableIntStateOf(2) }
+    // Default level at first launch which is level 1
+    var selectedLevel by remember { mutableIntStateOf(1) }
 
-    // List of 18 levels with their status
-    // Level 1: completed, Levels 2-3: unlocked, Levels 4-18: locked
-    val levels = remember {
-        (1..18).map { levelNum ->
-            val state = when (levelNum) {
-                1 -> "completed"
-                2, 3 -> "unlocked"
-                else -> "locked"
-            }
-            // group 3 related data into a single object
-            // each level is stored at triple (level state and title)
-            Triple(levelNum, state, "Level $levelNum")
-        }
+    // Selected level info loaded from level_progress.csv Objective, Traps, Rewards
+    val selectedInfo = levelDetailsMap[selectedLevel] ?: LevelDetails()
+    val objectiveText = selectedInfo.objective
+    val trapsText = "${selectedInfo.traps} holes"
+    val rewardsText = "${selectedInfo.rewards} coins"
+
+    // List of 18 levels with their status loaded dynamically from level_progress.csv
+    val levels = (1..18).map { levelNum ->
+        val state = levelDetailsMap[levelNum]?.status ?: if (levelNum == 1) "unlocked" else "locked"
+        Pair(levelNum, state)
     }
 
     Box(
@@ -217,21 +217,21 @@ fun LevelsScreen() {
                         ) {
                             Spacer(modifier = Modifier.height(20.dp)) // Space down to Objective area
                             Text(
-                                text = "Collect all tokens",
+                                text = objectiveText,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
                             Spacer(modifier = Modifier.height(15.dp)) // Space down to Traps area
                             Text(
-                                text = "4 holes",
+                                text = trapsText,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
                             Spacer(modifier = Modifier.height(15.dp))
                             Text(
-                                text = "200 coins",
+                                text = rewardsText,
                                 fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White
                             )
                         }

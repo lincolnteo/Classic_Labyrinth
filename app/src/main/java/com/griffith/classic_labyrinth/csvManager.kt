@@ -5,11 +5,22 @@ package com.griffith.classic_labyrinth
 import android.content.Context
 import java.io.File
 
+// Data class storing details for a level loaded from level_progress.csv
+data class LevelDetails(
+    val status: String = "locked",
+    val rewards: Int = 200,
+    val xp: Int = 100,
+    val personalBest: String = "0",
+    val objective: String = "Collect all tokens",
+    val traps: Int = 0
+)
+
 /**
  * Manager object for reading and writing CSV files (player_setting.csv and shop.csv)
  * to keep the activity files clean and organized.
  */
 object csvManager {
+    // ---------------------------- SHOPS CSV -----------------------------------
     // get and create the writable shop.csv file in internal storage
     fun getShopCsvFile(context: Context): File {
         val file = File(context.filesDir, "shop.csv")
@@ -24,6 +35,7 @@ object csvManager {
         }
         return file
     }
+
     // Load bought skin IDs from shop.csv
     fun loadBoughtSkinIds(context: Context): List<Int> {
         val ids = mutableListOf<Int>()
@@ -75,6 +87,7 @@ object csvManager {
         file.writeText(updatedLines.joinToString("\n"))
     }
 
+    // ---------------------------- PLAYERS CSV -----------------------------------
     // get and create the writable player_settings.csv file in internal storage
     fun getPlayerSettingsFile(context: Context): File {
         val file = File(context.filesDir, "player_setting.csv")
@@ -120,5 +133,44 @@ object csvManager {
             }
         }
         file.writeText(updatedLines.joinToString("\n"))
+    }
+
+    // ---------------------------- LEVELS CSV -----------------------------------
+    // get and create the writable level_progress.csv file in internal storage
+    fun getLevelProgressFile(context: Context): File {
+        val file = File(context.filesDir, "level_progress.csv")
+        // checks id user have the file
+        if (!file.exists()) {
+            // save player_setting.csv from assets into internal storage so we can write to it
+            context.assets.open("level_progress.csv").use { input ->
+                file.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+        }
+        return file
+    }
+
+    // Load full details for all levels from level_progress.csv
+    fun loadAllLevelDetails(context: Context): Map<Int, LevelDetails> {
+        val map = mutableMapOf<Int, LevelDetails>()
+        val file = getLevelProgressFile(context)
+        for (line in file.readLines()) {
+            val parts = line.split(",")// split into array
+            if (parts.size >= 7 && parts[0] != "LevelNum") {
+                val levelNum = parts[0].toIntOrNull()
+                if (levelNum != null) {
+                    map[levelNum] = LevelDetails(
+                        status = parts[1], // status locked,unlocked, completed
+                        rewards = parts[2].toIntOrNull() ?: 200, // coins reward, 200 if null
+                        xp = parts[3].toIntOrNull() ?: 100, // xp points, 100 if null
+                        personalBest = parts[4],// personal best time
+                        objective = parts[5],// objective
+                        traps = parts[6].toIntOrNull() ?: 0 // number of traps, 0 if null
+                    )
+                }
+            }
+        }
+        return map
     }
 }
