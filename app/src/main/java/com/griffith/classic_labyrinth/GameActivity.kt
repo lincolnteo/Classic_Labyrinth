@@ -41,6 +41,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
     // Level state
     private var currentLevelId = 1
     private var hasWon = false
+    private var hasLost = false
     private var startTimeMillis = 0L
     private var isPositionInitialized = false
 
@@ -100,7 +101,11 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                         ballX = startZoneX / 2f // position ball inside start zone
                         ballY = (topWallY + bottomWallY) / 2f // center ball vertically
                     }
-                    Level1.drawCanvas(this, screenWidth, screenHeight)
+                    // Render Level geometry based on current level ID
+                    when (currentLevelId) {
+                        1 -> Level1.drawCanvas(this, screenWidth, screenHeight)
+                        2 -> Level2.drawCanvas(this, screenWidth, screenHeight)
+                    }
 
                     if (equippedSkin == null) {
                         drawCircle(
@@ -172,7 +177,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
 
     // Runs every time the phone tilts
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event == null || isGamePaused || hasWon) return
+        if (event == null || isGamePaused || hasWon || hasLost) return
 
         // In landscape mode the phone physical axes are rotated 90 degrees relative to the screen.
         // The phone Y-axis (values[1]) becomes the screen Left/Right.
@@ -232,6 +237,21 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                     onUpdateY = { ballY = it },
                     onStopY = { speedY = 0f },
                     onWinState = { hasWon = true }
+                )
+                2 -> Level2.updatePhysics(
+                    context = this,
+                    ballX = ballX,
+                    ballY = ballY,
+                    radius = radius,
+                    screenWidth = screenWidth,
+                    screenHeight = screenHeight,
+                    hasWon = hasWon,
+                    hasLost = hasLost,
+                    startTimeMillis = startTimeMillis,
+                    onUpdateY = { ballY = it },
+                    onStopY = { speedY = 0f },
+                    onWinState = { hasWon = true },
+                    onLossState = { hasLost = true }
                 )
             }
         }

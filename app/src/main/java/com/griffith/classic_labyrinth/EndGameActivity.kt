@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
 class EndGameActivity : ComponentActivity() {
@@ -58,6 +57,20 @@ class EndGameActivity : ComponentActivity() {
                 personalBest = personalBest
             )
             enableEdgeToEdge()
+        }
+    }
+    // resume music when app is maximized
+    // reload player stats from player_setting.csv when screen resumes
+    override fun onResume() {
+        super.onResume()
+        SoundManager.isSwitchingScreens = false
+        SoundManager.resumeMusic()
+    }
+    // pause music when app is minimized, but keep playing if switching between activities
+    override fun onPause() {
+        super.onPause()
+        if (!SoundManager.isSwitchingScreens) {
+            SoundManager.pauseMusic()
         }
     }
 }

@@ -17,6 +17,7 @@ object SoundManager {
     private var soundPool: SoundPool? = null
     private var clickSoundId: Int = 0
     private var victorySoundId: Int = 0
+    private var lossSoundId: Int = 0
 
     // Global volume controls  0.0f to 1.0f
     var masterVolume = 1.0f
@@ -42,9 +43,10 @@ object SoundManager {
             soundPool = SoundPool.Builder().setMaxStreams(5) // Max simultaneous sounds
                 .setAudioAttributes(audioAttributes).build()
 
-            // Load the button click and victory sounds into memory
+            // Load the button click, victory, and loss sounds into memory
             clickSoundId = soundPool?.load(context, R.raw.fx_button_click, 1) ?: 0
             victorySoundId = soundPool?.load(context, R.raw.fx_victory, 1) ?: 0
+            lossSoundId = soundPool?.load(context, R.raw.fx_loss, 1) ?: 0
         }
 
         // Setup MediaPlayer for Background Music
@@ -63,6 +65,11 @@ object SoundManager {
     fun playClick() {
         val volume = masterVolume * fxVolume
         soundPool?.play(clickSoundId, volume, volume, 1, 0, 1f)
+    }
+    // Plays the loss sound effect
+    fun playLoss() {
+        val volume = masterVolume * fxVolume
+        soundPool?.play(lossSoundId, volume, volume, 1, 0, 1f)
     }
 
     // Plays the victory sound effect
