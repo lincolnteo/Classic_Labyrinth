@@ -1,19 +1,19 @@
 LevelNum, status,Rewards,XP, Personal Best,Objective,Trap
 1,unlocked,200,30,0,Victory Demo,0
-2,locked,250,110,0,Loss Demo,1
-3,locked,300,120,0,Example,1
-4,locked,350,130,0,nameOne,0
-5,locked,400,140,0,nameTwo,1
-6,locked,400,150,0,nameThree,2
-7,locked,400,160,0,nameFour,3
-8,locked,400,170,0,nameFive,4
-9,locked,400,180,0,nameSix,5
-10,locked,400,190,0,nameSeven,6
-11,locked,400,200,0,nameEight,7
-12,locked,400,210,0,nameNine,8
-13,locked,400,220,0,nameTen,9
-14,locked,400,230,0,nameEleven,10
-15,locked,400,240,0,nameTwelve,11
-16,locked,400,250,0,nameOneThree,12
-17,locked,400,260,0,nameOneFour,13
-18,locked,400,270,0,nameOneFive,14
+2,locked,250,40,0,Loss Demo,1
+3,locked,300,50,0,Example,1
+4,locked,350,60,0,nameOne,0
+5,locked,400,70,0,nameTwo,1
+6,locked,400,80,0,nameThree,2
+7,locked,400,90,0,nameFour,3
+8,locked,400,100,0,nameFive,4
+9,locked,400,110,0,nameSix,5
+10,locked,400,120,0,nameSeven,6
+11,locked,400,130,0,nameEight,7
+12,locked,400,140,0,nameNine,8
+13,locked,400,150,0,nameTen,9
+14,locked,400,160,0,nameEleven,10
+15,locked,400,170,0,nameTwelve,11
+16,locked,400,180,0,nameOneThree,12
+17,locked,400,190,0,nameOneFour,13
+18,locked,400,200,0,nameOneFive,14

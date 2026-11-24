@@ -105,6 +105,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                     when (currentLevelId) {
                         1 -> Level1.drawCanvas(this, screenWidth, screenHeight)
                         2 -> Level2.drawCanvas(this, screenWidth, screenHeight)
+                        3 -> Level3.drawCanvas(this, screenWidth, screenHeight)
                     }
 
                     if (equippedSkin == null) {
@@ -249,6 +250,23 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                     hasLost = hasLost,
                     startTimeMillis = startTimeMillis,
                     onUpdateY = { ballY = it },
+                    onStopY = { speedY = 0f },
+                    onWinState = { hasWon = true },
+                    onLossState = { hasLost = true }
+                )
+                3 -> Level3.updatePhysics(
+                    context = this,
+                    ballX = ballX,
+                    ballY = ballY,
+                    radius = radius,
+                    screenWidth = screenWidth,
+                    screenHeight = screenHeight,
+                    hasWon = hasWon,
+                    hasLost = hasLost,
+                    startTimeMillis = startTimeMillis,
+                    onUpdateX = { ballX = it },
+                    onUpdateY = { ballY = it },
+                    onStopX = { speedX = 0f },
                     onStopY = { speedY = 0f },
                     onWinState = { hasWon = true },
                     onLossState = { hasLost = true }
