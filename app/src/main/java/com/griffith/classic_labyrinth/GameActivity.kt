@@ -158,7 +158,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
                             val intent = Intent(this@GameActivity, SettingsActivity::class.java)
                             startActivity(intent)
                         },
-                        onExit ={ // go to main menu AKA exit explicit
+                        onExit ={ // go to levels explicit
                             SoundManager.isSwitchingScreens = true
                             val intent = Intent(this@GameActivity, LevelsActivity::class.java)
                             startActivity(intent)
@@ -189,16 +189,16 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         // Adjust speed based on the tilt.
         // Tilting Right positive Y should increase speedX (move right)
         // Tilting Down positiveX should increase speedY (move down)
-        speedX = speedX + tiltLeftRight
-        speedY = speedY + tiltUpDown
+        speedX += tiltLeftRight
+        speedY += tiltUpDown
 
         // Adjust speed based on sensitivity setting
-        speedX = speedX * CalibrationManager.sensitivity
-        speedY = speedY * CalibrationManager.sensitivity
+        speedX *= CalibrationManager.sensitivity
+        speedY *= CalibrationManager.sensitivity
 
         // Move the ball
-        ballX = ballX + speedX
-        ballY = ballY + speedY
+        ballX +=  speedX
+        ballY +=  speedY
 
         // Don't let ball pass left wall
         if (ballX - radius < 0f) {
@@ -284,7 +284,7 @@ class GameActivity : ComponentActivity(), SensorEventListener {
         sensorManager.registerListener(this, mySensor, SensorManager.SENSOR_DELAY_GAME)
 
         // Load tilt sensitivity from player_setting.csv
-        val settings = csvManager.loadPlayerSettings(this)
+        val settings = CsvManager.loadPlayerSettings(this)
         CalibrationManager.sensitivity = settings["tilt_sensitivity"]?.toFloatOrNull() ?: 0.7f
     }
 

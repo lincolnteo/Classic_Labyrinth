@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
         SoundManager.resumeMusic()
 
         // Load latest stats from player_setting.csv via csvManager
-        val settings = csvManager.loadPlayerSettings(this)
+        val settings = CsvManager.loadPlayerSettings(this)
         levelText = settings["level"] ?: "1"
         xpText = "${settings["current_xp"] ?: "0"}/100"
         coinsText = settings["coins"] ?: "0"
@@ -101,8 +101,8 @@ fun MainMenuScreen(
         // Content overlay container
         Box(
             modifier = Modifier
-                .fillMaxSize()
                 .padding(16.dp)
+                .fillMaxSize()
         ) {
 
             // Top Bar: Player Stats and Settings

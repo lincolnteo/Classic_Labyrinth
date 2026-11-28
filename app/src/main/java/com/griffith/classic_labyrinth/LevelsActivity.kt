@@ -44,7 +44,7 @@ class LevelsActivity : ComponentActivity() {
         super.onResume()
         SoundManager.isSwitchingScreens = false
         SoundManager.resumeMusic()
-        levelDetailsState = csvManager.loadAllLevelDetails(this)
+        levelDetailsState = CsvManager.loadAllLevelDetails(this)
     }
     // pause music when app is minimize, but keep playing if switching between activities
     override fun onPause() {

@@ -19,7 +19,7 @@ data class LevelDetails(
  * Manager object for reading and writing CSV files (player_setting.csv and shop.csv)
  * to keep the activity files clean and organized.
  */
-object csvManager {
+object CsvManager {
     // ---------------------------- SHOPS CSV -----------------------------------
     // get and create the writable shop.csv file in internal storage
     fun getShopCsvFile(context: Context): File {

@@ -93,9 +93,9 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
     var fxVolume by remember { mutableFloatStateOf(SoundManager.fxVolume) }
 
     // Load tilt sensitivity from player_setting.csv
-    val playerSettings = remember { csvManager.loadPlayerSettings(context) }
+    val playerSettings = remember { CsvManager.loadPlayerSettings(context) }
     // if sensitivity is not set the default will be 0.5
-    var sensitivity by remember { mutableFloatStateOf(playerSettings["tilt_sensitivity"]?.toFloatOrNull() ?: 0.5f) }
+    var sensitivity by remember { mutableFloatStateOf(playerSettings["tilt_sensitivity"]?.toFloatOrNull() ?: 0.7f) }
 
     // root container
     Box(
@@ -144,7 +144,7 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
                         SoundManager.masterVolume = it
                         SoundManager.updateVolumes()
                         // save new music volume to player_settings.csv
-                        csvManager.savePlayerSetting(context, "master_vol", it.toString())
+                        CsvManager.savePlayerSetting(context, "master_vol", it.toString())
                     })
                 // music volume slider
                 SettingRow(
@@ -155,7 +155,7 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
                         SoundManager.musicVolume = it
                         SoundManager.updateVolumes()
                         // save new music volume to player_settings.csv
-                        csvManager.savePlayerSetting(context, "music_vol", it.toString())
+                        CsvManager.savePlayerSetting(context, "music_vol", it.toString())
                     })
                 // fx volume slider
                 SettingRow(
@@ -165,7 +165,7 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
                         fxVolume = it
                         SoundManager.fxVolume = it
                         // save new music volume to player_settings.csv
-                        csvManager.savePlayerSetting(context, "fx_vol", it.toString())
+                        CsvManager.savePlayerSetting(context, "fx_vol", it.toString())
                     })
                 // sensitivity slider range 0 to 1
                 SettingRow(
@@ -175,7 +175,7 @@ fun SettingsScreen(onCalibrate: () -> Unit = {}) {
                         sensitivity = it
                         CalibrationManager.sensitivity = it
                         // save new sensitivity to player_setting.csv
-                        csvManager.savePlayerSetting(context, "tilt_sensitivity", it.toString())
+                        CsvManager.savePlayerSetting(context, "tilt_sensitivity", it.toString())
                     })
             }
 

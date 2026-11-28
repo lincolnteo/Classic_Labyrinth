@@ -29,7 +29,7 @@ object SoundManager {
 
     fun init(context: Context) {
         // Load volume settings from player_setting.csv via csvManager
-        val settings = csvManager.loadPlayerSettings(context)
+        val settings = CsvManager.loadPlayerSettings(context)
         // get volume from csv else default value
         masterVolume = settings["master_vol"]?.toFloatOrNull() ?: 1.0f
         musicVolume = settings["music_vol"]?.toFloatOrNull() ?: 0.5f

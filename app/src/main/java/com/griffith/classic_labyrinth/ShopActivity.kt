@@ -147,13 +147,13 @@ fun ShopScreen() {
     // Load bought skin IDs, prices, and player settings thru csvManager
     // get all skin IDs that are =true
     val boughtIds =
-        remember { mutableStateListOf<Int>().apply { addAll(csvManager.loadBoughtSkinIds(context)) } }
+        remember { mutableStateListOf<Int>().apply { addAll(CsvManager.loadBoughtSkinIds(context)) } }
     // get all shop item prices from shop.csv
     val itemPrices =
-        remember { csvManager.loadShopItemPrices(context) }
+        remember { CsvManager.loadShopItemPrices(context) }
     // get all data from player setting csv
     val playerSettings =
-        remember { csvManager.loadPlayerSettings(context) }
+        remember { CsvManager.loadPlayerSettings(context) }
     // get coin count from player_setting.csv
     // dedault at 0 if not found
     var userCoins by
@@ -364,14 +364,14 @@ fun ShopScreen() {
                             // Only purchase if an item is selected and not already bought
                             if (item != null && item.id !in boughtIds) {
                                 // Purchase item using csvManager
-                                csvManager.purchaseShopItem(context, item.id)
+                                CsvManager.purchaseShopItem(context, item.id)
                                 boughtIds.add(item.id)
 
                                 // Deduct coins and update player_setting.csv via csvManager
                                 val itemPrice = itemPrices[item.id] ?: 0
                                 if (userCoins >= itemPrice) {
                                     userCoins -= itemPrice
-                                    csvManager.savePlayerSetting(
+                                    CsvManager.savePlayerSetting(
                                         context, "coins", userCoins.toString()
                                     )
                                 }

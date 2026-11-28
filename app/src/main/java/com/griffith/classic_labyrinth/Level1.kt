@@ -92,16 +92,16 @@ object Level1 {
         val timeFormatted = String.format(java.util.Locale.ENGLISH, "%.2fs", elapsedTimeSec)
 
         // Complete level 1 in level_progress.csv, update Personal Best if faster, and unlock level 2
-        csvManager.completeLevel(context, LEVEL_ID, elapsedTimeSec)
+        CsvManager.completeLevel(context, LEVEL_ID, elapsedTimeSec)
 
         // Read level details and reward coins and XP
-        val levelInfo = csvManager.loadAllLevelDetails(context)[LEVEL_ID]
+        val levelInfo = CsvManager.loadAllLevelDetails(context)[LEVEL_ID]
         val coinsReward = levelInfo?.rewards ?: 0
         val xpReward = levelInfo?.xp ?: 0
         val objectiveStr = levelInfo?.objective ?: "Victory Demo"
         val personalBestStr = levelInfo?.personalBest ?: timeFormatted
 
-        val playerSettings = csvManager.loadPlayerSettings(context)
+        val playerSettings = CsvManager.loadPlayerSettings(context)
         val currentCoins = playerSettings["coins"]?.toIntOrNull() ?: 0
         val currentXp = playerSettings["current_xp"]?.toIntOrNull() ?: 0
         var playerLevel = playerSettings["level"]?.toIntOrNull() ?: 1
@@ -115,9 +115,9 @@ object Level1 {
             newXp -= 100
         }
         // save updates player settings
-        csvManager.savePlayerSetting(context, "coins", newCoins.toString())
-        csvManager.savePlayerSetting(context, "current_xp", newXp.toString())
-        csvManager.savePlayerSetting(context, "level", playerLevel.toString())
+        CsvManager.savePlayerSetting(context, "coins", newCoins.toString())
+        CsvManager.savePlayerSetting(context, "current_xp", newXp.toString())
+        CsvManager.savePlayerSetting(context, "level", playerLevel.toString())
 
         // Launch EndGameActivity with level stats
         SoundManager.isSwitchingScreens = true
